@@ -46,13 +46,16 @@
 			<md-content>
             	<md-list flex>
             		<md-list-item class="md-2-line" ng-repeat="campaign in campaings" ng-click = "chooseCampaign(campaign)">
-                  		<div class="md-list-item-text" layout="column">
+                  		<div class="md-list-item-text" layout="column" >
                      		<h3>{{campaign.name}} </h3>
                      		<p>{{campaign.product}}</p>
                   		</div>
+                      <md-button class="md-icon-button" aria-label="Settings" ng-disabled="false" ng-click = 'editCampaign(campaign)'>
+                        <md-icon md-font-library="material-icons">edit</md-icon>
+                      </md-button>
                   		<md-button class="md-icon-button" aria-label="Settings" ng-disabled="false" ng-click = 'deleteCampaign(campaign)'>
-          					<md-icon md-font-library="material-icons">delete</md-icon>
-        				</md-button>
+                        <md-icon md-font-library="material-icons">delete</md-icon>
+        				      </md-button>
                   		<md-divider></md-divider>
                		</md-list-item>
             	</md-list>
@@ -61,31 +64,141 @@
 		<md-divider></md-divider>
 		<div ng-model = "campaign" flex>
 			<md-toolbar layout="row" class="md-hue-1">
-      			<div class="md-toolbar-tools">
-      				<md-button class="md-icon-button" aria-label="Settings" ng-disabled="false">
-          				<md-icon md-font-library="material-icons">menu</md-icon>
-        			</md-button>
-        			<span>Campaign</span>
-      			</div>
-    		</md-toolbar>
-			<md-content flex layout-padding ng-if = "campaign">
+      	<div class="md-toolbar-tools">
+      		<md-button class="md-icon-button" aria-label="Settings" ng-disabled="false" ng-click = "shMenu($event)">
+      				<md-icon md-font-library="material-icons">menu</md-icon>
+      		</md-button>
+      		<span>Campaign</span>
+          <md-button class="md-icon-button" aria-label="Settings" ng-if="campaign.edit" ng-click = 'saveCampaign(campaign)'>
+            <md-icon md-font-library="material-icons">save</md-icon>
+          </md-button>
+          <md-button class="md-icon-button" aria-label="Settings" ng-if="!campaign.edit" ng-click = 'createCampaign()'>
+            <md-icon md-font-library="material-icons">add</md-icon>
+          </md-button>
+          <md-button class="md-icon-button" aria-label="Settings" ng-disabled="false" ng-if = "campaign && campaings.indexOf(campaign) !== -1" ng-click = 'editCampaign(campaign)'>
+            <md-icon md-font-library="material-icons">edit</md-icon>
+          </md-button>
+          <md-button class="md-icon-button" aria-label="Settings" ng-disabled="false" ng-if = "campaign && campaings.indexOf(campaign) !== -1" ng-click = 'deleteCampaign(campaign)'>
+            <md-icon md-font-library="material-icons">delete</md-icon>
+          </md-button>
+      	</div>
+    	</md-toolbar>
+			<md-content flex layout-padding ng-if = "campaign && !campaign.edit">
 				<h3 class = "dataHeader">Campaign Name</h3>
 				<p>{{campaign.name}}</p>
 				<h3 class = "dataHeader">Product</h3>
 				<p>{{campaign.product}}</p>
 				<h3 class = "dataHeader">Keywords</h3>
-				<md-chips ng-model="campaign.keywords" readonly = "readonly"></md-chips>
+				<md-chips ng-model="campaign.keywords" readonly = "true"></md-chips>
 				<h3 class = "dataHeader">Bid Amount</h3>
 				<p>{{campaign.bidAmount}} {{campaign.currency}}</p>
 				<h3 class = "dataHeader">Campaign Found</h3>
 				<p>{{campaign.fund}}</p>
 				<h3 class = "dataHeader">Status</h3>
-				<md-switch ng-model = "campaign.status" aria-label = "Status" ng-true-value = "'on'" ng-false-value = "'off'" class="md-primary" disabled>Status : {{campaign.status}}</md-switch>
+				<md-switch ng-model = "campaign.status" aria-label = "Status" ng-true-value = "'on'" ng-false-value = "'off'" class="md-primary" disabled>{{campaign.status}}</md-switch>
 				<h3 class = "dataHeader">Town</h3>
 				<p>{{campaign.town}}</p>
 				<h3 class = "dataHeader">Radius</h3>
 				<p>{{campaign.radius}} km</p>
 			</md-content>
+
+      <md-content flex layout-padding ng-if = "campaign && campaign.edit">
+        <form name="campaignForm">
+          <md-input-container class="md-block">
+            <label>Campaign Name</label>
+            <input required type="text" name="campaignName" ng-model="campaign.name"
+                 minlength="10" maxlength="100"/>
+            <div ng-messages="campaignForm.campaignName.$error" role="alert">
+              <div ng-message-exp="['required', 'minlength', 'maxlength']">
+                Campaign name must be between 10 and 100 characters long.
+              </div>
+            </div>
+          </md-input-container>
+          <md-input-container class="md-block">
+            <label>Product</label>
+            <input required type="text" name="campaignProduct" ng-model="campaign.product"
+                 minlength="1" maxlength="50"/>
+            <div ng-messages="campaignForm.campaignProduct.$error" role="alert">
+              <div ng-message-exp="['required', 'minlength', 'maxlength']">
+                Product must be between 1 and 50 characters long.
+              </div>
+            </div>
+          </md-input-container>
+          <md-chips ng-model="campaign.keywords" readonly = "false" md-removable= "true" md-enable-chip-edit="true"></md-chips>
+          <md-slider-container>
+            <span>Bid Amount</span>
+            <md-slider flex min="1" max="10000" ng-model="campaign.bidAmount" aria-label="Bid Amount" id="blue-slider" class="md-primary">
+            </md-slider>
+            <md-input-container>
+              <input flex type="number" ng-model="campaign.bidAmount" aria-label="Bid Amount" aria-controls="blue-slider">
+            </md-input-container>
+          </md-slider-container>
+          <md-slider-container>
+            <span>Fund</span>
+            <md-slider flex min="1" max="100000" ng-model="campaign.fund" aria-label="Fund" id="blue-slider" class="md-primary">
+            </md-slider>
+            <md-input-container>
+              <input flex type="number" ng-model="campaign.fund" aria-label="Fund" aria-controls="blue-slider">
+            </md-input-container>
+          </md-slider-container>
+          <h4 class = "dataHeader">Status</h3>
+          <md-switch ng-model = "campaign.status" aria-label = "Status" ng-true-value = "'on'" ng-false-value = "'off'" class="md-primary">{{campaign.status}}</md-switch>
+
+
+
+          <!--<md-input-container class="md-block">
+            <label>Town</label>
+            <input required type="text" name="town" ng-model="campaign.town"
+                 minlength="1" maxlength="50"/>
+            <div ng-messages="campaignForm.town.$error" role="alert">
+              <div ng-message-exp="['required', 'minlength', 'maxlength']">
+                Town must be between 1 and 50 characters long.
+              </div>
+            </div>
+          </md-input-container>-->
+
+
+
+          <md-autocomplete required
+          ng-disabled="false"
+          md-search-text="searchTown"
+          md-selected-item="campaign.town"
+          md-items="town in findTowns(searchTown)"
+          md-min-length="1"
+          md-max-length="50"
+          md-input-name = "town"
+          md-item-text = "town"
+          placeholder="Town">
+            <md-item-template>
+              <span md-highlight-text="searchTown" md-highlight-flags="^i">{{town}}</span>
+            </md-item-template>
+            <md-not-found>
+              {{searchTown}}
+              <md-button class="md-icon-button" aria-label="Settings" ng-click = 'addTown(searchTown)'>
+              <md-icon md-font-library="material-icons">add</md-icon>
+          </md-button>
+            </md-not-found>
+            <div ng-messages="campaignForm.town.$error" role="alert">
+              <div ng-message-exp="['required', 'minlength', 'maxlength']">
+                Town must be between 1 and 50 characters long.
+              </div>
+            </div>
+          </md-autocomplete>
+
+
+
+
+
+          <md-slider-container>
+            <span>Radius</span>
+            <md-slider flex min="1" max="20000" ng-model="campaign.radius" aria-label="Radius" id="blue-slider" class="md-primary">
+            </md-slider>
+            <md-input-container>
+              <input flex type="number" ng-model="campaign.radius" aria-label="Radius" aria-controls="blue-slider">
+            </md-input-container>
+          </md-slider-container>
+        </form>
+      </md-content>
 	  	</div>
 	</div>
 </body>
