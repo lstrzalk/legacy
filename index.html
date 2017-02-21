@@ -1,0 +1,97 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>
+    Campaign manager
+  </title>
+
+  <!-- SCRIPTS -->
+  <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular-animate.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular-aria.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular-messages.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular-resource.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular-route.js"></script>
+  <script src="app.js"></script>
+
+
+  <!-- STYLESHEETS -->
+  <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.3/themes/default/style.min.css"/>
+  <link rel="stylesheet" href="app.css">
+
+</head>
+<body ng-app = 'campMan' ng-cloak>
+	  <md-toolbar class="md-cold">
+	    <div class="md-toolbar-tools">
+	      <h2 class="md-flex">Campaign Manager</h2>
+	    </div>
+  	</md-toolbar>
+  	<md-divider></md-divider>
+	<div layout = "row" layout-xs="column" ng-controller = "campaignCtrl" >
+		<div ng-model = "campaigns" flex>
+			<md-toolbar layout="row" class="md-hue-1">
+      			<div class="md-toolbar-tools">
+      				<md-button class="md-icon-button" aria-label="Settings" ng-disabled="false">
+          				<md-icon md-font-library="material-icons">menu</md-icon>
+        			</md-button>
+        			<span>List</span>
+      			</div>
+    		</md-toolbar>
+			<md-content>
+            	<md-list flex>
+            		<md-list-item class="md-2-line" ng-repeat="campaign in campaings" ng-click = "chooseCampaign(campaign)">
+                  		<div class="md-list-item-text" layout="column">
+                     		<h3>{{campaign.name}} </h3>
+                     		<p>{{campaign.product}}</p>
+                  		</div>
+                  		<md-button class="md-icon-button" aria-label="Settings" ng-disabled="false" ng-click = 'deleteCampaign(campaign)'>
+          					<md-icon md-font-library="material-icons">delete</md-icon>
+        				</md-button>
+                  		<md-divider></md-divider>
+               		</md-list-item>
+            	</md-list>
+            </md-content>
+		</div>
+		<md-divider></md-divider>
+		<div ng-model = "campaign" flex>
+			<md-toolbar layout="row" class="md-hue-1">
+      			<div class="md-toolbar-tools">
+      				<md-button class="md-icon-button" aria-label="Settings" ng-disabled="false">
+          				<md-icon md-font-library="material-icons">menu</md-icon>
+        			</md-button>
+        			<span>Campaign</span>
+      			</div>
+    		</md-toolbar>
+			<md-content flex layout-padding ng-if = "campaign">
+				<h3 class = "dataHeader">Campaign Name</h3>
+				<p>{{campaign.name}}</p>
+				<h3 class = "dataHeader">Product</h3>
+				<p>{{campaign.product}}</p>
+				<h3 class = "dataHeader">Keywords</h3>
+				<md-chips ng-model="campaign.keywords" readonly = "readonly"></md-chips>
+				<h3 class = "dataHeader">Bid Amount</h3>
+				<p>{{campaign.bidAmount}} {{campaign.currency}}</p>
+				<h3 class = "dataHeader">Campaign Found</h3>
+				<p>{{campaign.fund}}</p>
+				<h3 class = "dataHeader">Status</h3>
+				<md-switch ng-model = "campaign.status" aria-label = "Status" ng-true-value = "'on'" ng-false-value = "'off'" class="md-primary" disabled>Status : {{campaign.status}}</md-switch>
+				<h3 class = "dataHeader">Town</h3>
+				<p>{{campaign.town}}</p>
+				<h3 class = "dataHeader">Radius</h3>
+				<p>{{campaign.radius}} km</p>
+			</md-content>
+	  	</div>
+	</div>
+</body>
+</html>
+
+
+
+
+
