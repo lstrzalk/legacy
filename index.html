@@ -53,7 +53,7 @@
                       <md-button class="md-icon-button" aria-label="Settings" ng-disabled="false" ng-click = 'editCampaign(campaign)'>
                         <md-icon md-font-library="material-icons">edit</md-icon>
                       </md-button>
-                  		<md-button class="md-icon-button" aria-label="Settings" ng-disabled="false" ng-click = 'deleteCampaign(campaign)'>
+                  		<md-button class="md-icon-button" aria-label="Settings" ng-disabled="false" ng-click = 'deleteCampaign(campaign, $event)'>
                         <md-icon md-font-library="material-icons">delete</md-icon>
         				      </md-button>
                   		<md-divider></md-divider>
@@ -75,10 +75,10 @@
           <md-button class="md-icon-button" aria-label="Settings" ng-if="!campaign.edit" ng-click = 'createCampaign()'>
             <md-icon md-font-library="material-icons">add</md-icon>
           </md-button>
-          <md-button class="md-icon-button" aria-label="Settings" ng-disabled="false" ng-if = "campaign && campaings.indexOf(campaign) !== -1" ng-click = 'editCampaign(campaign)'>
+          <md-button class="md-icon-button" aria-label="Settings" ng-disabled="false" ng-if = "campaign && campaings.indexOf(campaign) !== -1 && campaign.edit == false" ng-click = 'editCampaign(campaign)'>
             <md-icon md-font-library="material-icons">edit</md-icon>
           </md-button>
-          <md-button class="md-icon-button" aria-label="Settings" ng-disabled="false" ng-if = "campaign && campaings.indexOf(campaign) !== -1" ng-click = 'deleteCampaign(campaign)'>
+          <md-button class="md-icon-button" aria-label="Settings" ng-disabled="false" ng-if = "campaign && campaings.indexOf(campaign) !== -1" ng-click = 'deleteCampaign(campaign, $event)'>
             <md-icon md-font-library="material-icons">delete</md-icon>
           </md-button>
       	</div>
@@ -89,7 +89,12 @@
 				<h3 class = "dataHeader">Product</h3>
 				<p>{{campaign.product}}</p>
 				<h3 class = "dataHeader">Keywords</h3>
-				<md-chips ng-model="campaign.keywords" readonly = "true"></md-chips>
+				<md-chips ng-model="campaign.keywords" readonly = "true">
+          <md-chip-template>
+            <strong>{{$chip.value}}</strong>
+            <em>({{$chip.category}})</em>
+        </md-chip-template>
+        </md-chips>
 				<h3 class = "dataHeader">Bid Amount</h3>
 				<p>{{campaign.bidAmount}} {{campaign.currency}}</p>
 				<h3 class = "dataHeader">Campaign Found</h3>
@@ -97,7 +102,7 @@
 				<h3 class = "dataHeader">Status</h3>
 				<md-switch ng-model = "campaign.status" aria-label = "Status" ng-true-value = "'on'" ng-false-value = "'off'" class="md-primary" disabled>{{campaign.status}}</md-switch>
 				<h3 class = "dataHeader">Town</h3>
-				<p>{{campaign.town}}</p>
+				<p>{{campaign.town.value}}</p>
 				<h3 class = "dataHeader">Radius</h3>
 				<p>{{campaign.radius}} km</p>
 			</md-content>
@@ -124,7 +129,22 @@
               </div>
             </div>
           </md-input-container>
-          <md-chips ng-model="campaign.keywords" readonly = "false" md-removable= "true" md-enable-chip-edit="true"></md-chips>
+          <md-chips ng-model="campaign.keywords" readonly = "false" md-removable= "true" md-enable-chip-edit= "true" placeholder = "Enter keyword" md-autocomplete-snap md-require-match>
+            <md-autocomplete
+            md-selected-item="selectedTag"
+            md-search-text="searchTag" 
+            md-items="tag in findTags(searchTag)"
+            md-item-text="item.name"
+            placeholder="Keywords">
+              <strong md-highlight-text="searchTag">{{tag.value}}</strong>
+              <em>({{tag.category}})</em>
+            </md-autocomplete>
+            <md-chip-template>
+              <strong>{{$chip.value}}</strong>
+              <em>({{$chip.category}})</em>
+            </md-chip-template>
+
+          </md-chips>
           <md-slider-container>
             <span>Bid Amount</span>
             <md-slider flex min="1" max="10000" ng-model="campaign.bidAmount" aria-label="Bid Amount" id="blue-slider" class="md-primary">
@@ -167,10 +187,10 @@
           md-min-length="1"
           md-max-length="50"
           md-input-name = "town"
-          md-item-text = "town"
+          md-item-text = "town.value"
           placeholder="Town">
             <md-item-template>
-              <span md-highlight-text="searchTown" md-highlight-flags="^i">{{town}}</span>
+              <span md-highlight-text="searchTown" md-highlight-flags="^i">{{town.value}}</span>
             </md-item-template>
             <md-not-found>
               {{searchTown}}
