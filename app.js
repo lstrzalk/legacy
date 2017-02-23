@@ -190,7 +190,7 @@ app.controller('campaignCtrl', function($scope,$mdDialog,Campaigns, Towns, Tags)
           .ok('yes')
           .cancel('no');
         $mdDialog.show(confirm).then(function() {
-        	if(Campaigns.getCampaignPositionById(campaign) !== -1){
+        	if(Campaigns.getCampaignPositionById(campaign.id) !== -1){
         		$scope.campaigns = Campaigns.delete(campaign);
         	}
 	      	if(campaign === $scope.campaign){
