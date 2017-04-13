@@ -14,8 +14,7 @@
 #barTop {
     position: absolute;
     z-index: 3;
-    width: 90%;
-    left: 10%;
+    width: 100%;
     height: 48px;
     top:0;
     margin:0;
@@ -27,8 +26,7 @@
 }
 #barBottom {
     position: absolute;
-    width: 96%;
-    right: 4%;
+    width: 100%;
     height: 48px;
     bottom:0;
     margin:0;
@@ -66,16 +64,19 @@ html, body {
     right: 0;
     background-color: #B71C1C; 
 }
-.searchButton :hover, .searchButtonFocused :hover, .exitButton :hover{
-    cursor: pointer;
-}
-.searchButtonFocused{
+.deleteButton{
     position: absolute;
     width: 48px;
     height: 48px;
     top:0;
-    right: 48px;
-    background-color: #303F9F; 
+    right: 0;
+    background-color: #B71C1C; 
+}
+.searchButton, .searchButtonFocused, .exitButton, .deleteButton, .focusButton {
+    cursor: pointer;
+}
+.deleteButton :focus, .focusButton :focus {
+    outline: none;
 }
 .exitButton{
     position: absolute;
@@ -85,9 +86,17 @@ html, body {
     right: 0;
     background-color: #6A1B9A; 
 }
+.focusButton{
+    position: absolute;
+    width: 48px;
+    height: 48px;
+    top:0;
+    right: 48px;
+    background-color: #2E7D32; 
+}
 .inputHolder{
     position: absolute;
-    width: calc(100% - 96px);
+    width: calc(100% - 48px);
     height: 48px;
     bottom: 12px;
     left: 0;
@@ -98,7 +107,7 @@ html, body {
     color: #BDBDBD;
 }
 .toolbar{
-    width: calc(100% - 48px);
+    width: calc(100% - 96px);
     top: 0;
     left: 0;
 }

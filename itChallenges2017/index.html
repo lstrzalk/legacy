@@ -14,43 +14,34 @@
     <div id = "barTop">
         <div class = "markersBar">
             <md-tabs class = "toolbar" md-selected = "topSelected" md-dynamic-height md-stretch-tabs="never">
-                <md-tab ng-repeat="marker in markers" ng-disabled="bottomSelected != null && $index == bottomSelected">
+                <md-tab ng-repeat="marker in markers" md-on-select="markerChoosed(marker)" ng-disabled="bottomSelected != null && $index == bottomSelected">
                     <span class = "tab">{{marker.name}}.{{marker.title}}</span>
                     <md-icon class = "tab" ng-click="rename(marker)"  md-font-library="material-icons">edit</md-icon>
                     <md-icon class = "tab" ng-click="delete(marker, 0)"  md-font-library="material-icons">delete</md-icon>
                 </md-tab>
             </md-tabs>
+            <div class = "focusButton"><md-icon class = "search" ng-click="adjustMap()" md-font-library="material-icons">center_focus_strong</md-icon></div>
             <div class = "searchButton"><md-icon class = "search" md-font-library="material-icons">search</md-icon></div>
         </div>
         <div class = "searchBar">
             <div class = "inputHolder">
                 <md-input-container class="md-block" flex-gt-sm>
-                    <input id = "topInput">
+                    <input aria-label="Put place" name = "topInput" id = "topInput">
                 </md-input-container>
             </div>
-            <div class = "searchButtonFocused"><md-icon class = "search" md-font-library="material-icons">search</md-icon></div>
             <div class = "exitButton"><md-icon class = "search" md-font-library="material-icons">clear</md-icon></div>
         </div>
     </div>
     <div id = "barBottom">
         <div class = "markersBar">
             <md-tabs class = "toolbar" md-selected = "bottomSelected" md-dynamic-height md-stretch-tabs="never">
-                <md-tab ng-repeat="marker in markers" ng-disabled="topSelected != null && $index == topSelected">
+                <md-tab ng-repeat="marker in markers" md-on-select="markerChoosed(marker)" ng-disabled="topSelected != null && $index == topSelected">
                     <span class = "tab">{{marker.name}}.{{marker.title}}</span>
                     <md-icon class = "tab" ng-click="rename(marker)"  md-font-library="material-icons">edit</md-icon>
                     <md-icon class = "tab" ng-click="delete(marker, 1)"  md-font-library="material-icons">delete</md-icon>
                 </md-tab>
             </md-tabs>
-            <div class = "searchButton"><md-icon class = "search" md-font-library="material-icons">search</md-icon></div>
-        </div>
-        <div class = "searchBar">
-            <div class = "inputHolder">
-                <md-input-container class="md-block" flex-gt-sm>
-                    <input id = "bottomInput">
-                </md-input-container>
-            </div>
-            <div class = "searchButtonFocused"><md-icon class = "search" md-font-library="material-icons">search</md-icon></div>
-            <div class = "exitButton"><md-icon class = "search" md-font-library="material-icons">clear</md-icon></div>
+            <div class = "deleteButton" ><md-icon class = "search" ng-click="deleteAll()" md-font-library="material-icons">delete_forever</md-icon></div>
         </div>
     </div>
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCMM7MME49FZ75uQ8QQCVa-EK8pZo2Xmoc&libraries=places"></script>

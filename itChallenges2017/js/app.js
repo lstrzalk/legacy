@@ -71,19 +71,30 @@ $mdThemingProvider.theme('default')
     .accentPalette('brown');
 });
 
+/**
+ * TODO LIST
+ * Add Info Windows to tags - Today
+ * Put address below marker tab when hover - Today/Tomorow
+ * Explain what every button does when hover on him - Tomorow
+ * Make calculate functionality !important - Today
+ * Add categories to markers - Tomorow
+ * Add fancy icons to markers - Tomorow/Today
+*/
+
 app.controller('mainController', function($scope, $window, $mdDialog, Markers){
     topAutocomplete = new google.maps.places.Autocomplete(
            /** @type {!HTMLInputElement} */(document.getElementById('topInput')),
       {types: ['geocode']});
-    bottomAutocomplete = new google.maps.places.Autocomplete(
-          /** @type {!HTMLInputElement} */(document.getElementById('bottomInput')),
-    {types: ['geocode']});
     topAutocomplete.addListener('place_changed', doSomeAction);
-    bottomAutocomplete.addListener('place_changed', doSomeAction);
     function doSomeAction(){
-        var place = autocomplete.getPlace();
-        console.log(place);
+        var place = topAutocomplete.getPlace();
+        var newMarker = placeMarker($scope, place.geometry.location, Markers);
+        $scope.markersObjects[newMarker.label] = newMarker;
+        $scope.$apply();
+        map.setCenter(place.geometry.location);
     }
+    var geocoder = new google.maps.Geocoder;
+    var infowindow = new google.maps.InfoWindow;
     $scope.markers = Markers.loadMarkers();
     var cracov = new google.maps.LatLng(50.021, 19.885);
     $window.map = new google.maps.Map(document.getElementById('map'), {
@@ -95,9 +106,29 @@ app.controller('mainController', function($scope, $window, $mdDialog, Markers){
     google.maps.event.addListener($window.map, 'click', function(event) {
         var newMarker = placeMarker($scope, event.latLng, Markers);
         $scope.markersObjects[newMarker.label] = newMarker;
+        decode(geocoder, infowindow, event.latLng, newMarker);
         $scope.$apply();
     });
 
+    $scope.markerChoosed = function(marker){
+        map.setCenter(marker.location);
+    }
+
+    $scope.decode = function(geocoder, infowindow, location, marker){
+        geocoder.geocode({'location': location}, function(results, status) {
+          if (status === 'OK') {
+            if (results[1]) {
+              map.setZoom(11);
+              infowindow.setContent(results[1].formatted_address);
+              infowindow.open(map, marker);
+            } else {
+              window.alert('No results found');
+            }
+          } else {
+            window.alert('Geocoder failed due to: ' + status);
+          }
+        });
+    }
 
     $scope.rename = function(marker){
         var confirm = $mdDialog.prompt()
@@ -120,7 +151,26 @@ app.controller('mainController', function($scope, $window, $mdDialog, Markers){
         $scope.markersObjects[marker.name].setMap(null);
         delete $scope.markersObjects[marker.name];
         $scope.markers = Markers.deleteMarker(marker.name);
-        index == 0 ? $scope.topSelected = "" : $scope.bottomSelected = ""
+        index == 0 ? delete $scope.topSelected : delete $scope.bottomSelected
+        //Add determining if it is top or bottom selected and delete it
+    }
+    $scope.deleteAll = function(){
+        localStorage.clear();
+        for(var marker in $scope.markersObjects){
+            $scope.markersObjects[marker].setMap(null);
+            delete $scope.markersObjects[marker];
+
+        }
+        $scope.markers.splice(0,$scope.markers.length)
+        $scope.markers = Markers.loadMarkers();
+        $scope.markersObjects = {};
+    }
+    $scope.adjustMap = function(){
+        var bounds = new google.maps.LatLngBounds();
+        for (var i = 0; i < $scope.markers.length; i++) {
+        bounds.extend($scope.markers[i].location);
+        }
+        map.fitBounds(bounds);
     }
 });
 
@@ -157,6 +207,7 @@ function placeMarker($scope, location, Markers) {
         $scope.delete(Markers.getMarkerByName(this.label))
         $scope.$apply();
     });
+    map.setCenter(location);
     return marker;
 }
 function loadMarkers(map, $scope, Markers){
