@@ -72,6 +72,18 @@ $mdThemingProvider.theme('default')
 });
 
 app.controller('mainController', function($scope, $window, $mdDialog, Markers){
+    topAutocomplete = new google.maps.places.Autocomplete(
+           /** @type {!HTMLInputElement} */(document.getElementById('topInput')),
+      {types: ['geocode']});
+    bottomAutocomplete = new google.maps.places.Autocomplete(
+          /** @type {!HTMLInputElement} */(document.getElementById('bottomInput')),
+    {types: ['geocode']});
+    topAutocomplete.addListener('place_changed', doSomeAction);
+    bottomAutocomplete.addListener('place_changed', doSomeAction);
+    function doSomeAction(){
+        var place = autocomplete.getPlace();
+        console.log(place);
+    }
     $scope.markers = Markers.loadMarkers();
     var cracov = new google.maps.LatLng(50.021, 19.885);
     $window.map = new google.maps.Map(document.getElementById('map'), {
@@ -85,6 +97,8 @@ app.controller('mainController', function($scope, $window, $mdDialog, Markers){
         $scope.markersObjects[newMarker.label] = newMarker;
         $scope.$apply();
     });
+
+
     $scope.rename = function(marker){
         var confirm = $mdDialog.prompt()
         .title('Rename place')
@@ -102,10 +116,11 @@ app.controller('mainController', function($scope, $window, $mdDialog, Markers){
             }, function() {
         });
     }
-    $scope.delete = function(marker){
+    $scope.delete = function(marker, index){
         $scope.markersObjects[marker.name].setMap(null);
         delete $scope.markersObjects[marker.name];
         $scope.markers = Markers.deleteMarker(marker.name);
+        index == 0 ? $scope.topSelected = "" : $scope.bottomSelected = ""
     }
 });
 

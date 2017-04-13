@@ -11,32 +11,29 @@
     margin:0;
     padding: 0;
 }
+#topCatcher{
+    
+}
 #barTop {
     position: absolute;
     z-index: 3;
-    width: 90%;
-    left: 10%;
+    width: 100%;
     height: 48px;
     top:0;
     margin:0;
     padding: 0;
     background-color: #212121;
-    visibility: visible;
-    opacity:0;
-    filter:alpha(opacity=0);
+    display: none;
 }
 #barBottom {
     position: absolute;
-    width: 96%;
-    right: 4%;
+    width: 100%;
     height: 48px;
     bottom:0;
     margin:0;
     padding: 0;
     background-color: #212121;
-    visibility: visible;
-    opacity:0;
-    filter:alpha(opacity=0);
+    display: none;
 }
 #leftPannel {
     height: 100%;
@@ -89,9 +86,9 @@ html, body {
     position: absolute;
     width: calc(100% - 96px);
     height: 48px;
-    bottom: 12px;
+    top:0;
     left: 0;
-    font-size: 150%;
+    font-size: 125%;
 }
 .search{
     font-size: 48px;

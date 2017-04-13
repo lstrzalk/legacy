@@ -1,4 +1,4 @@
-var animationTime = 500;
+var animationTime = 100;
 var mouseEntered = false;
 $('#barTop').mouseenter(function() {
     if(!mouseEntered){
@@ -11,9 +11,9 @@ $('#barTop').mouseenter(function() {
 $('#barTop').mouseleave(function() {
     if(mouseEntered){
         mouseEntered = false;
-        $("#map").animate({top: '0',height: '100%'},animationTime)
         setTopOut( $(this));
         setBottomOut($("#barBottom"));
+        $("#map").animate({top: '0',height: '100%'},animationTime)
     }
 });
 $('#barBottom').mouseenter(function() {
@@ -27,9 +27,9 @@ $('#barBottom').mouseenter(function() {
 $('#barBottom').mouseleave(function() {
     if(mouseEntered){
         mouseEntered = false;
-        $("#map").animate({top: '0',height: '100%'},animationTime)
         setBottomOut( $(this));
         setTopOut($("#barTop"));
+        $("#map").animate({top: '0',height: '100%'},animationTime)
     }
 });
 $('#barTop .searchButton').click(function(){
@@ -47,27 +47,23 @@ $('#barBottom .exitButton').click(function(){
 });
 
 var setTopEnter = function(elem){
-    elem.css({left:'0'}).width('100%');
     setTimeout(function(){
-        elem.fadeTo(animationTime,1,"swing");
+        elem.slideDown();
     }, animationTime)
 }
 var setTopOut = function(elem){
-    elem.fadeTo(animationTime,0,"swing");
+    elem.hide();
     setTimeout(function(){
-        elem.css({left:'10%'}).width('90%');
     }, animationTime)
 }
 var setBottomEnter = function(elem){
-    elem.css({right:'0'}).width('100%');
     setTimeout(function(){
-        elem.fadeTo(animationTime,1,"swing");
+        elem.slideUp();
     }, animationTime)
 }
 var setBottomOut = function(elem){
-    elem.fadeTo(animationTime,0,"swing");
+    elem.hide();
     setTimeout(function(){
-        elem.css({right:'4%'}).width('96%');
     }, animationTime)
 }
 var showSearchToolbar = function(searchBar, tagsBar){
