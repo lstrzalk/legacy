@@ -79,9 +79,13 @@ $mdThemingProvider.theme('default')
  * Add categories to markers - Tomorow
  * Add fancy icons to markers - Tomorow/Today
  * Cahnge to one geocoder - refactor
+ * Make addresses permanent in local storage
+ * add two new info windows
+ * Delete 48 unused px from bottom bar
 */
 cracov = new google.maps.LatLng(50.021, 19.885);
-var lastChoosed = true;
+readyToCompute = false;
+lastChoosed = true;
 app.controller('mainController', function($scope, $window, $mdDialog, Markers){
     InfoWindow = new google.maps.InfoWindow;
     geocoder = new google.maps.Geocoder
@@ -90,6 +94,20 @@ app.controller('mainController', function($scope, $window, $mdDialog, Markers){
         center: cracov,
         zoom: 15
     });
+    geodesicPoly = new google.maps.Polyline({
+          strokeColor: '#CC0099',
+          strokeOpacity: 1.0,
+          strokeWeight: 3,
+          geodesic: true,
+          map: window.map
+        });
+    geodesicPolyThin = new google.maps.Polyline({
+          strokeColor: '#424242',
+          strokeOpacity: 1.0,
+          strokeWeight: 1,
+          geodesic: true,
+          map: window.map
+        });
     $scope.markersObjects = {};
     topAutocomplete = new google.maps.places.Autocomplete(
            /** @type {!HTMLInputElement} */(document.getElementById('topInput')),
@@ -109,6 +127,11 @@ app.controller('mainController', function($scope, $window, $mdDialog, Markers){
             // decode(new google.maps.Geocoder, InfoWindow, marker.location, $scope.markersObjects[marker.name], $window.map)
             var choosed = [$scope.markers[$scope.topSelected],$scope.markers[$scope.bottomSelected]]
             focusMap(choosed, $window.map);
+            readyToCompute = true;
+            showComputingWindow();
+            geodesicPolyThin.setMap($window.map);
+            geodesicPolyThin.setPath([$scope.markersObjects[choosed[0].name].getPosition(), $scope.markersObjects[choosed[1].name].getPosition()]);
+
         }else{
             decode(geocoder, InfoWindow, marker.location, $scope.markersObjects[marker.name], $window.map)
             $window.map.setCenter(marker.location);
@@ -163,6 +186,22 @@ app.controller('mainController', function($scope, $window, $mdDialog, Markers){
     }
     $scope.adjustMap = function(){
         focusMap($scope.markers, $window.map);
+    }
+    $scope.cancel = function(){
+        readyToCompute = false;
+        geodesicPoly.setMap(null);
+        geodesicPolyThin.setMap(null);
+        delete $scope.topSelected;
+        delete $scope.bottomSelected;
+        hideComputingWindow();
+        focusMap($scope.markers, $window.map);
+    }
+    $scope.getResults = function(){
+        var choosed = [$scope.markers[$scope.topSelected],$scope.markers[$scope.bottomSelected]]
+        printDistance(prepareDistance(google.maps.geometry.spherical.computeDistanceBetween ($scope.markersObjects[choosed[0].name].getPosition(), $scope.markersObjects[choosed[1].name].getPosition())))
+        geodesicPoly.setPath([$scope.markersObjects[choosed[0].name].getPosition(), $scope.markersObjects[choosed[1].name].getPosition()]);
+        geodesicPolyThin.setMap(null);
+        geodesicPoly.setMap($window.map);
     }
 });
 
@@ -230,13 +269,21 @@ function addListenersToMarker(Markers, marker, $scope, geocoder, infowindow, map
                     $scope.topSelected = findIndex($scope.markers, marker.label);
                 }
             }
+            var choosed = [$scope.markers[$scope.topSelected],$scope.markers[$scope.bottomSelected]]
+            focusMap(choosed, map);
         }else if($scope.bottomSelected != undefined && $scope.bottomSelected != -1){
             $scope.topSelected = findIndex($scope.markers, marker.label);
-        }else{
+            var choosed = [$scope.markers[$scope.topSelected],$scope.markers[$scope.bottomSelected]]
+            focusMap(choosed, map);
+        }else if($scope.topSelected != undefined && $scope.topSelected != -1){
             $scope.bottomSelected = findIndex($scope.markers, marker.label)
+            var choosed = [$scope.markers[$scope.topSelected],$scope.markers[$scope.bottomSelected]]
+            focusMap(choosed, map);
+        }else {
+            $scope.topSelected = findIndex($scope.markers, marker.label)
+            decode(geocoder, infowindow, marker.position, marker, map);
         }
         $scope.$apply();
-        decode(geocoder, infowindow, marker.position, marker, map);
     });
     marker.addListener('dblclick', function(){
         $scope.delete(Markers.getMarkerByName(this.label))
@@ -342,5 +389,13 @@ function focusMap(markers, map){
     }else{
         map.setCenter(cracov);
         map.setZoom(15);
+    }
+}
+function prepareDistance(dist){
+    dist = Math.round(dist);
+    if(dist / 1000 == 0){
+        return dist.toString() + " meters"
+    }else{
+        return (dist/1000).toString() + " kilometers"
     }
 }

@@ -13,15 +13,15 @@
     <div id="map"></div>
     <div id = "barTop">
         <div class = "markersBar">
-            <md-tabs class = "toolbar" md-selected = "topSelected" md-dynamic-height md-stretch-tabs="never">
+            <md-tabs id = "topToolbar" md-selected = "topSelected" md-dynamic-height md-stretch-tabs="never">
                 <md-tab ng-repeat="marker in markers" md-on-select="markerChoosed(marker)" ng-disabled="bottomSelected != undefined && bottomSelected != -1 && $index == bottomSelected">
                     <span class = "tab">{{marker.name}}.{{marker.title}}</span>
                     <md-icon class = "tab" ng-click="rename(marker)"  md-font-library="material-icons">edit</md-icon>
                     <md-icon class = "tab" ng-click="delete(marker, $index)"  md-font-library="material-icons">delete</md-icon>
                 </md-tab>
             </md-tabs>
-            <div class = "focusButton"><md-icon class = "search" ng-click="adjustMap()" md-font-library="material-icons">center_focus_strong</md-icon></div>
-            <div class = "searchButton"><md-icon class = "search" md-font-library="material-icons">search</md-icon></div>
+            <div id = "focusButton"><md-icon class = "search" ng-click="adjustMap()" md-font-library="material-icons">zoom_out_map</md-icon></div>
+            <div id = "searchButton"><md-icon class = "search" md-font-library="material-icons">search</md-icon></div>
         </div>
         <div class = "searchBar">
             <div class = "inputHolder">
@@ -32,9 +32,14 @@
             <div class = "exitButton"><md-icon class = "search" md-font-library="material-icons">clear</md-icon></div>
         </div>
     </div>
+    <div id = "computeResult"></div>
+    <div id = "rightPannel">
+        <div id = "computeButton"><md-icon class = "rightBar" ng-click="getResults()" md-font-library="material-icons">directions</md-icon></div>
+        <div id = "cancelButton"><md-icon class = "rightBar" ng-click="cancel()" md-font-library="material-icons">clear</md-icon></div>
+    </div>
     <div id = "barBottom">
         <div class = "markersBar">
-            <md-tabs class = "toolbar" md-selected = "bottomSelected" md-dynamic-height md-stretch-tabs="never">
+            <md-tabs id = "bottomToolbar" md-selected = "bottomSelected" md-dynamic-height md-stretch-tabs="never">
                 <md-tab ng-repeat="marker in markers" md-on-select="markerChoosed(marker)" ng-disabled="topSelected != undefined && topSelected != -1 && $index == topSelected">
                     <span class = "tab">{{marker.name}}.{{marker.title}}</span>
                     <md-icon class = "tab" ng-click="rename(marker)"  md-font-library="material-icons">edit</md-icon>
@@ -44,7 +49,7 @@
             <div class = "deleteButton" ><md-icon class = "search" ng-click="deleteAll()" md-font-library="material-icons">delete_forever</md-icon></div>
         </div>
     </div>
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCMM7MME49FZ75uQ8QQCVa-EK8pZo2Xmoc&libraries=places"></script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCMM7MME49FZ75uQ8QQCVa-EK8pZo2Xmoc&libraries=places&geometry"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular-animate.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular-aria.min.js"></script>
