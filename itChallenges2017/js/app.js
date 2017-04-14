@@ -64,6 +64,10 @@ app.service('Markers',function(){
     }	
 });
 
+/*******************************
+*********APP THEME CONFIG*******
+*******************************/
+
 app.config(function($mdThemingProvider) {
 $mdThemingProvider.theme('default')
     .dark()
@@ -71,38 +75,31 @@ $mdThemingProvider.theme('default')
     .accentPalette('brown');
 });
 
-/**
- * TODO LIST
- * Put address below marker tab when hover - Today/Tomorow
- * Explain what every button does when hover on him - Tomorow
- * Make calculate functionality !important - Today - in progress
- * Add categories to markers - Tomorow
- * Add fancy icons to markers - Tomorow/Today
- * Cahnge to one geocoder - refactor
- * Make addresses permanent in local storage
- * add two new info windows
- * Delete 48 unused px from bottom bar
-*/
+/*******************************
+*********GLOBAL VARAIBLES*******
+*******************************/
+
 cracov = new google.maps.LatLng(50.021, 19.885);
 readyToCompute = false;
+computed = true;
 lastChoosed = true;
+/*******************************
+**********APP CONTROLLER********
+*******************************/
 app.controller('mainController', function($scope, $window, $mdDialog, Markers){
-    InfoWindow = new google.maps.InfoWindow;
-    geocoder = new google.maps.Geocoder
-    $scope.markers = Markers.loadMarkers();
+    infoWindow = new google.maps.InfoWindow;// Info window for start marker
+    infoWindow2 = new google.maps.InfoWindow;//Info window for end marker
+    geocoder = new google.maps.Geocoder//Geocoder for getting addresses
+    lastChoosen = [];//To mark again with proper color
+    $scope.markers = Markers.loadMarkers();//loading markers
+    /*******************************
+    ************CREATE MAP**********
+    *******************************/
     $window.map = new google.maps.Map(document.getElementById('map'), {
         center: cracov,
         zoom: 15,
-        mapTypeControl: true,
-        mapTypeControlOptions: {
-            style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,/*MUST CHANGE*/
-            position: google.maps.ControlPosition.LEFT_CENTER
-        },
-        zoomControl: true,
-        zoomControlOptions: {
-            position: google.maps.ControlPosition.RIGHT_CENTER
-        },
         scaleControl: true,
+        // Place maps components in places where they will not colision bars
         streetViewControl: true,
         streetViewControlOptions: {
             position: google.maps.ControlPosition.LEFT_CENTER
@@ -111,14 +108,25 @@ app.controller('mainController', function($scope, $window, $mdDialog, Markers){
         fullscreenControlOptions: {
             position: google.maps.ControlPosition.RIGHT_CENTER
         },
+        mapTypeControl: true,
+        mapTypeControlOptions: {
+            style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
+            position: google.maps.ControlPosition.LEFT_CENTER
+        },
+        zoomControl: true,
+        zoomControlOptions: {
+            position: google.maps.ControlPosition.RIGHT_CENTER
+        }
     });
+    // Creating line creator
     geodesicPoly = new google.maps.Polyline({
-          strokeColor: '#CC0099',
-          strokeOpacity: 1.0,
+          strokeColor: '#AA00FF',
+          strokeOpacity: 3.0,
           strokeWeight: 3,
           geodesic: true,
           map: window.map
         });
+    // Creating thin creator
     geodesicPolyThin = new google.maps.Polyline({
           strokeColor: '#424242',
           strokeOpacity: 1.0,
@@ -126,36 +134,94 @@ app.controller('mainController', function($scope, $window, $mdDialog, Markers){
           geodesic: true,
           map: window.map
         });
+    // Structure to hold old markers as Google Markers
     $scope.markersObjects = {};
+    // Autocomplete for search box
     topAutocomplete = new google.maps.places.Autocomplete(
            /** @type {!HTMLInputElement} */(document.getElementById('topInput')),
       {types: ['geocode']});
     topAutocomplete.addListener('place_changed', function(){
         placeFromSearchBox($scope, this, Markers, $window.map)
     });
-    loadMarkers($window.map, $scope, Markers, InfoWindow);
+    //Loading exisiting Markers
+    loadMarkers($window.map, $scope, Markers, infoWindow);
+    // Adding events on map to create new marker
     google.maps.event.addListener($window.map, 'click', function(event) {
-        var newMarker = placeMarker($scope, event.latLng, Markers, $window.map, InfoWindow);
+        if (readyToCompute)
+        {
+            $mdDialog.show(
+                $mdDialog.alert()
+                    .parent(angular.element(document.querySelector('#popupContainer')))
+                    .clickOutsideToClose(true)
+                    .title('Can\'t add new Marker')
+                    .textContent('You must close calculating window')
+                    .ok('Got it!')
+                    .targetEvent(event)
+                );
+            return ;
+        }
+        var newMarker = placeMarker($scope, event.latLng, Markers, $window.map, infoWindow);
         $scope.markersObjects[newMarker.label] = newMarker;
         $scope.$apply();
     });
-
+    //Action when user choose a marker
     $scope.markerChoosed = function(marker){
-        if($scope.topSelected >=0 && $scope.bottomSelected >= 0){
-            // decode(new google.maps.Geocoder, InfoWindow, marker.location, $scope.markersObjects[marker.name], $window.map)
-            var choosed = [$scope.markers[$scope.topSelected],$scope.markers[$scope.bottomSelected]]
-            focusMap(choosed, $window.map);
-            readyToCompute = true;
-            showComputingWindow();
-            geodesicPolyThin.setMap($window.map);
-            geodesicPolyThin.setPath([$scope.markersObjects[choosed[0].name].getPosition(), $scope.markersObjects[choosed[1].name].getPosition()]);
+        if($scope.topSelected >=0 && $scope.bottomSelected >= 0){// If both are selected
+            computed = false;
+            geodesicPoly.setMap(null)//clear last line
+            if(lastChoosen.length == 2){
+                hideResult();//hide last result
+                lastChoosen[0].setIcon({//set last result icon to standard
+                    path: MAP_PIN,
+                    fillColor: '#03A9F4',
+                    fillOpacity: 1,
+                    strokeColor: '',
+                    strokeWeight: 0,
+                    labelOrigin: new google.maps.Point(0,-25)
+                });
+                lastChoosen[1].setIcon({//set last result icon to standard
+                    path: MAP_PIN,
+                    fillColor: '#03A9F4',
+                    fillOpacity: 1,
+                    strokeColor: '',
+                    strokeWeight: 0,
+                    labelOrigin: new google.maps.Point(0,-25)
+                });
+            }
+            var choosed = [$scope.markers[$scope.topSelected],$scope.markers[$scope.bottomSelected]]//get choosed markers
+            focusMap(choosed, $window.map);//focus map on them
+            readyToCompute = true;//flag for dispaly info
+            showComputingWindow();//show computing window manager
+            geodesicPolyThin.setMap($window.map);//print thin line between cities
+            var start = $scope.markersObjects[choosed[0].name]//specify start
+            var end = $scope.markersObjects[choosed[1].name]//specify end
+            start.setIcon({//Set green icon for start
+                path: MAP_PIN,
+                fillColor: '#8BC34A',
+                fillOpacity: 1,
+                strokeColor: '',
+                strokeWeight: 0,
+                labelOrigin: new google.maps.Point(0,-25)
+            });
+            end.setIcon({//Set red icon for end
+                path: MAP_PIN,
+                fillColor: '#F44336',
+                fillOpacity: 1,
+                strokeColor: '',
+                strokeWeight: 0,
+                labelOrigin: new google.maps.Point(0,-25)
+            });
+            lastChoosen = [start, end];//set las choosen
+            geodesicPolyThin.setPath([start.getPosition(), end.getPosition()]);//print line between cities
+            putInfo(geocoder, infoWindow, choosed[0].location, start, $window.map);//open info window for start
+            putInfo(geocoder, infoWindow2, choosed[1].location, end, $window.map);//open info window for end
 
-        }else{
-            decode(geocoder, InfoWindow, marker.location, $scope.markersObjects[marker.name], $window.map)
+        }else{//if not both are secified
+            decode(geocoder, infoWindow, marker.location, $scope.markersObjects[marker.name], $window.map)//display info window
             $window.map.setCenter(marker.location);
         }
     }
-
+    //function to rename marker title, you can call it as e.g. home, school, best parking
     $scope.rename = function(marker){
         var confirm = $mdDialog.prompt()
         .title('Rename place')
@@ -173,39 +239,112 @@ app.controller('mainController', function($scope, $window, $mdDialog, Markers){
             }, function() {
         });
     }
+    //function for delete marker
     $scope.delete = function(marker, index){
-        //Shold add new value, not delete becouse magic i doing
+        //case when two markers are choosen
         if($scope.topSelected != undefined && $scope.topSelected != -1 && $scope.bottomSelected != undefined && $scope.bottomSelected != -1){
-            console.log("TODO");
-        }else{
-            if(index == $scope.topSelected){
-                delete $scope.topSelected
-                console.log($scope.topSelected)
-            }else if(index == $scope.bottomSelected){
+            if(index == $scope.topSelected || index == $scope.bottomSelected){//Dialog that you can't delete marker if it is selected
+                $mdDialog.show(
+                $mdDialog.alert()
+                    .parent(angular.element(document.querySelector('#popupContainer')))
+                    .clickOutsideToClose(true)
+                    .title('Can\'t Delete selected marker')
+                    .textContent('You must unselect marker')
+                    .ok('Got it!')
+                );
+            }else{//You can delete marker
+                var topVal = $scope.markers[$scope.topSelected];
+                var bottomVal = $scope.markers[$scope.bottomSelected]
+                delete $scope.topSelected;
                 delete $scope.bottomSelected
-                console.log($scope.bottomSelected)
+                $scope.markersObjects[marker.name].setMap(null);
+                delete $scope.markersObjects[marker.name];
+                $scope.markers = Markers.deleteMarker(marker.name);
             }
         }
-        $scope.markersObjects[marker.name].setMap(null);
-        delete $scope.markersObjects[marker.name];
-        $scope.markers = Markers.deleteMarker(marker.name);
-        //Add determining if it is top or bottom selected and delete it
+        else if($scope.topSelected != undefined && $scope.topSelected != -1){//If only top marker is selected
+            if(index == $scope.topSelected){//Dialog that you can't delete marker if it is selected
+                $mdDialog.show(
+                $mdDialog.alert()
+                    .parent(angular.element(document.querySelector('#popupContainer')))
+                    .clickOutsideToClose(true)
+                    .title('Can\'t Delete selected marker')
+                    .textContent('You must unselect marker')
+                    .ok('Got it!')
+                );
+            }else{//You can delete marker
+                var topVal = $scope.markers[$scope.topSelected];
+                delete $scope.topSelected;
+                $scope.markersObjects[marker.name].setMap(null);
+                delete $scope.markersObjects[marker.name];
+                $scope.markers = Markers.deleteMarker(marker.name);
+            }
+        }else if($scope.bottomSelected != undefined && $scope.bottomSelected != -1){//If only bottom marker is selected
+            if(index == $scope.bottomSelected){//Dialog that you can't delete marker if it is selected
+                $mdDialog.show(
+                $mdDialog.alert()
+                    .parent(angular.element(document.querySelector('#popupContainer')))
+                    .clickOutsideToClose(true)
+                    .title('Can\'t Delete selected marker')
+                    .textContent('You must unselect marker')
+                    .ok('Got it!')
+                );
+            }else{//You can delete marker
+                var bottomVal = $scope.markers[$scope.bottomSelected]
+                delete $scope.bottomSelected
+                $scope.markersObjects[marker.name].setMap(null);
+                delete $scope.markersObjects[marker.name];
+                $scope.markers = Markers.deleteMarker(marker.name);
+            }
+        }else{//There are no any restriction if any marker is select
+            $scope.markersObjects[marker.name].setMap(null);
+            delete $scope.markersObjects[marker.name];
+            $scope.markers = Markers.deleteMarker(marker.name);
+        }
     }
+    //Function for deleting all markers, lines, reset local storage
     $scope.deleteAll = function(){
+        delete $scope.topSelected;
+        delete $scope.bottomSelected;
+        readyToCompute = false;
+        hideComputingWindow()
         localStorage.clear();
         for(var marker in $scope.markersObjects){
             $scope.markersObjects[marker].setMap(null);
-            delete $scope.markersObjects[marker];
+            delete $scope.markersObjects[marker.label];
 
         }
+        geodesicPolyThin.setMap(null);
+        geodesicPoly.setMap(null);
         $scope.markers.splice(0,$scope.markers.length)
         $scope.markers = Markers.loadMarkers();
         $scope.markersObjects = {};
+
     }
-    $scope.adjustMap = function(){
+    $scope.adjustMap = function(){//Holder of real function to adjust map to all tags
         focusMap($scope.markers, $window.map);
     }
+    //Stop distance computing process 
     $scope.cancel = function(){
+        if(lastChoosen.length == 2){
+            hideResult();//hide last result
+            lastChoosen[0].setIcon({//set last result icon to standard
+                path: MAP_PIN,
+                fillColor: '#03A9F4',
+                fillOpacity: 1,
+                strokeColor: '',
+                strokeWeight: 0,
+                labelOrigin: new google.maps.Point(0,-25)
+            });
+            lastChoosen[1].setIcon({//set last result icon to standard
+                path: MAP_PIN,
+                fillColor: '#03A9F4',
+                fillOpacity: 1,
+                strokeColor: '',
+                strokeWeight: 0,
+                labelOrigin: new google.maps.Point(0,-25)
+            });
+        }
         readyToCompute = false;
         geodesicPoly.setMap(null);
         geodesicPolyThin.setMap(null);
@@ -214,26 +353,21 @@ app.controller('mainController', function($scope, $window, $mdDialog, Markers){
         hideComputingWindow();
         focusMap($scope.markers, $window.map);
     }
+    //Function print distance to user
     $scope.getResults = function(){
+        computed = true;
         var choosed = [$scope.markers[$scope.topSelected],$scope.markers[$scope.bottomSelected]]
-        printDistance(prepareDistance(google.maps.geometry.spherical.computeDistanceBetween ($scope.markersObjects[choosed[0].name].getPosition(), $scope.markersObjects[choosed[1].name].getPosition())))
+        var dist = prepareDistance(google.maps.geometry.spherical.computeDistanceBetween($scope.markersObjects[choosed[0].name].getPosition(), $scope.markersObjects[choosed[1].name].getPosition()))
+        printDistance(dist)
         geodesicPoly.setPath([$scope.markersObjects[choosed[0].name].getPosition(), $scope.markersObjects[choosed[1].name].getPosition()]);
         geodesicPolyThin.setMap(null);
         geodesicPoly.setMap($window.map);
     }
 });
+/*******************************
+**********CONTROLLER END********
+*******************************/
 
-app.directive('ngRightClick', function($parse) {
-    return function(scope, element, attrs) {
-        var fn = $parse(attrs.ngRightClick);
-        element.bind('contextmenu', function(event) {
-            scope.$apply(function() {
-                event.preventDefault();
-                fn(scope, {$event:event});
-            });
-        });
-    };
-});
 function findIndex(list, node){
     for(var i = 0; i < list.length;i++){
         if(list[i].name == node){
@@ -242,32 +376,41 @@ function findIndex(list, node){
     }
     return -1;
 }
-function placeMarker($scope, location, Markers, map, InfoWindow) {
+//Placing marker on map
+function placeMarker($scope, location, Markers, map, infoWindow) {
     var id = Markers.getID();
-    var marker = createMarkerObject(Markers, $scope, location, id, id, map, InfoWindow)
+    var marker = createMarkerObject(Markers, $scope, location, id, id, map, infoWindow)
     $scope.markers = Markers.createMarker(marker.label, marker.title, location);
     map.setCenter(location);
     return marker;
 }
-function loadMarkers(map, $scope, Markers, InfoWindow){
+//Loading markers from simple, avaliable to string parse, to Google marks format, unable to string parse
+function loadMarkers(map, $scope, Markers, infoWindow){
     for(var i = 0; i< $scope.markers.length ; i = i +1){
-        $scope.markersObjects[$scope.markers[i].name] = createMarkerObject(Markers, $scope, $scope.markers[i].location, $scope.markers[i].title, $scope.markers[i].name, map, InfoWindow);
+        $scope.markersObjects[$scope.markers[i].name] = createMarkerObject(Markers, $scope, $scope.markers[i].location, $scope.markers[i].title, $scope.markers[i].name, map, infoWindow);
     }
     
 }
-
-function createMarkerObject(Markers, $scope, location, title, label, map, InfoWindow){
+//Process of creating Google Marker from Simple format
+function createMarkerObject(Markers, $scope, location, title, label, map, infoWindow){
     var marker = new google.maps.Marker({
         position: location,
         title: title,
         label: label,
-        map: map
+        map: map,
+        icon: {
+            path: MAP_PIN,
+            fillColor: '#03A9F4',
+            fillOpacity: 1,
+            strokeColor: '',
+            strokeWeight: 0,
+            labelOrigin: new google.maps.Point(0,-25)
+        }
     })
-    return addListenersToMarker(Markers, marker, $scope,  geocoder, InfoWindow, map);
+    return addListenersToMarker(Markers, marker, $scope,  geocoder, infoWindow, map);
 }
-
-
-function addListenersToMarker(Markers, marker, $scope, geocoder, infowindow, map){
+//Function Adding listeners to marker
+function addListenersToMarker(Markers, marker, $scope, geocoder, infoWindow, map){
     marker.addListener('click', function(){
         if($scope.topSelected >= 0 && $scope.bottomSelected >= 0){
             if(lastChoosed){
@@ -299,7 +442,7 @@ function addListenersToMarker(Markers, marker, $scope, geocoder, infowindow, map
             focusMap(choosed, map);
         }else {
             $scope.topSelected = findIndex($scope.markers, marker.label)
-            decode(geocoder, infowindow, marker.position, marker, map);
+            decode(geocoder, infoWindow, marker.position, marker, map);
         }
         $scope.$apply();
     });
@@ -309,23 +452,24 @@ function addListenersToMarker(Markers, marker, $scope, geocoder, infowindow, map
     });
     return marker
 }
-function placeFromSearchBox($scope, topAutocomplete, Markers, map, InfoWindow){
+//Function adding place found in search box to markers
+function placeFromSearchBox($scope, topAutocomplete, Markers, map, infoWindow){
     var place = topAutocomplete.getPlace();
     if(place){
-        var newMarker = placeMarker($scope, place.geometry.location, Markers, map, InfoWindow);
+        var newMarker = placeMarker($scope, place.geometry.location, Markers, map, infoWindow);
         $scope.markersObjects[newMarker.label] = newMarker;
         $scope.$apply();
     }
 }
-
-function decode(geocoder, infowindow, location, marker, map){
+//function for centering map on selected marker and print info window about him
+function decode(geocoder, infoWindow, location, marker, map){
     geocoder.geocode({'location': location}, function(results, status) {
         if (status === 'OK') {
         if (results[0]) {
             map.setZoom(15);
             map.setCenter(location);
-            infowindow.setContent(printAddress(marker,results[0].formatted_address));
-            infowindow.open(map, marker);
+            infoWindow.setContent(printAddress(marker,results[0].formatted_address));
+            infoWindow.open(map, marker);
         } else {
             window.alert('No results found');
         }
@@ -334,6 +478,7 @@ function decode(geocoder, infowindow, location, marker, map){
         }
     });
 }
+//Function for preparing address to print in pretty way
 function printAddress(marker, address){
     var res = address.split(",");
     var street;
@@ -362,14 +507,15 @@ function printAddress(marker, address){
         }
     }
     else{
-        street = "<div id=\"address\"> <p>"+ res[0] +"</p>\n</div>\n"
+        street = "<div id=\"address\">"+ res[0] +"\n</div>\n"
     }
-    region = "<div id=\"address\"> <p>"+ res[1] +"</p>\n</div>\n"
-    country = "<div id=\"address\"> <p>"+ res[2] +"</p>\n</div>\n"
-    var title ="<h2 id=\"address\"> Title: "+ marker.title +"</h2>\n"
-    var id =  "<h3 id=\"address\"> id: "+ marker.label +"</h3>\n"
+    region = "<div id=\"address\">"+ res[1] +"\n</div>\n"
+    country = "<div id=\"address\"> "+ res[2] +"\n</div>\n"
+    var title ="<div id=\"titleHeader\"><b> Title: "+ marker.title +"</b></div>\n"
+    var id =  "<div id=\"idHeader\"><b> id: "+ marker.label +"</b></div>\n"
     return title + id + street + region + country;
 }
+//function to find balance between lengths of two lines with long addresses
 function balance(str){
     var index = 0;
     var best = 1;
@@ -393,11 +539,11 @@ function balance(str){
     }
     return best;
 }
+//function focusing map including all markers
 function focusMap(markers, map){
     var bounds = new google.maps.LatLngBounds();
     if(markers.length > 1){
         for (var i = 0; i < markers.length; i++) {
-            console.log(markers[i].location)
             bounds.extend(markers[i].location);
         }
         map.fitBounds(bounds);
@@ -409,11 +555,27 @@ function focusMap(markers, map){
         map.setZoom(15);
     }
 }
+//Prepare distance format to print
 function prepareDistance(dist){
     dist = Math.round(dist);
-    if(dist / 1000 == 0){
-        return dist.toString() + " meters"
+    if(Math.floor(dist / 1000) == 0){
+        return "<span flex>"+dist.toString()+"</span><span flex> meters</span>"
     }else{
-        return (dist/1000).toString() + " kilometers"
+        return "<span flex>"+(dist/1000).toString()+"</span><span flex> kilometers</span>"
     }
+}
+//put info window into map
+function putInfo(geocoder, infoWindow, location, marker, map){
+    geocoder.geocode({'location': location}, function(results, status) {
+        if (status === 'OK') {
+        if (results[0]) {
+            infoWindow.setContent(printAddress(marker,results[0].formatted_address));
+            infoWindow.open(map, marker);
+        } else {
+            window.alert('No results found');
+        }
+        } else {
+        window.alert('Geocoder failed due to: ' + status);
+        }
+    });
 }

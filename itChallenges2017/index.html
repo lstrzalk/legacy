@@ -8,11 +8,15 @@
     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
     <link rel="stylesheet" href="css/app.css"/>
+    <link rel="stylesheet" href="css/map-icons.min.css"/>
   </head>
   <body ng-app="itChallenges" ng-controller="mainController" ng-cloak>
+    <!-- Map -->
     <div id="map"></div>
+    <!-- Top Bar -->
     <div id = "barTop">
         <div class = "markersBar">
+            <!-- Top Markers -->
             <md-tabs id = "topToolbar" md-selected = "topSelected" md-dynamic-height md-stretch-tabs="never">
                 <md-tab ng-repeat="marker in markers" md-on-select="markerChoosed(marker)" ng-disabled="bottomSelected != undefined && bottomSelected != -1 && $index == bottomSelected">
                     <span class = "tab">{{marker.name}}.{{marker.title}}</span>
@@ -20,25 +24,37 @@
                     <md-icon class = "tab" ng-click="delete(marker, $index)"  md-font-library="material-icons">delete</md-icon>
                 </md-tab>
             </md-tabs>
+            <!-- Bottom to focus map to all markers -->
             <div id = "focusButton"><md-icon class = "search" ng-click="adjustMap()" md-font-library="material-icons">zoom_out_map</md-icon></div>
+            <!-- Bottom triggered search box -->
             <div id = "searchButton"><md-icon class = "search" md-font-library="material-icons">search</md-icon></div>
         </div>
+        <!-- Search Box Bar -->
         <div class = "searchBar">
             <div class = "inputHolder">
                 <md-input-container class="md-block" flex-gt-sm>
                     <input aria-label="Put place" name = "topInput" id = "topInput">
                 </md-input-container>
             </div>
+            <!-- Bottom for exit search box -->
             <div class = "exitButton"><md-icon class = "search" md-font-library="material-icons">clear</md-icon></div>
         </div>
     </div>
-    <div id = "computeResult"></div>
+    <!-- Hidden div to show computed distance -->
+    <div id = "computeResult" layout = "row" layout-xs="column"></div>
+    <!-- Hidden div to show what every top button does -->
+    <div id = "topInfo"></div>
+    <!-- Right Bar for hidden buttons, mandatory to compute -->
     <div id = "rightPannel">
+        <!-- Bottom triggers computing -->
         <div id = "computeButton"><md-icon class = "rightBar" ng-click="getResults()" md-font-library="material-icons">directions</md-icon></div>
+        <!-- Bottom canels computing -->
         <div id = "cancelButton"><md-icon class = "rightBar" ng-click="cancel()" md-font-library="material-icons">clear</md-icon></div>
     </div>
+    <!-- Bottom Bar -->
     <div id = "barBottom">
         <div class = "markersBar">
+            <!-- Bottom Markers -->
             <md-tabs id = "bottomToolbar" md-selected = "bottomSelected" md-dynamic-height md-stretch-tabs="never">
                 <md-tab ng-repeat="marker in markers" md-on-select="markerChoosed(marker)" ng-disabled="topSelected != undefined && topSelected != -1 && $index == topSelected">
                     <span class = "tab">{{marker.name}}.{{marker.title}}</span>
@@ -46,10 +62,13 @@
                     <md-icon class = "tab" ng-click="delete(marker, $index)"  md-font-library="material-icons">delete</md-icon>
                 </md-tab>
             </md-tabs>
+            <!-- Bottom triggers deleteing all buttons -->
             <div id = "deleteButton" ><md-icon class = "search" ng-click="deleteAll()" md-font-library="material-icons">delete_forever</md-icon></div>
+            <!-- Hidden div to show what delete button does -->
             <div id = "bottomInfo"><b>Delete all markers and local storage reset</b></div>
         </div>
     </div>
+    <!-- SCRIPTS -->
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCMM7MME49FZ75uQ8QQCVa-EK8pZo2Xmoc&libraries=places&geometry"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular-animate.min.js"></script>
@@ -59,5 +78,6 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
     <script src="js/app.js"></script>
     <script src="js/showTabs.js"></script>
+    <script src="js/map-icons.min.js"></script>
   </body>
 </html>
