@@ -46,7 +46,7 @@ $('body,html').mousemove(function(event){
             }
         }
         else if(event.pageY < $(window).height() - 10 && event.pageY > $(window).height() - 48){
-            if(event.pageX < $(window).width() * 0.96 ){
+            if(event.pageX < $(window).width() - 48 ){
                 if(!mouseEntered){
                     mouseEntered = true;
                     setBottomEnter($("#barBottom"));
@@ -97,13 +97,13 @@ $(document).click(function(event) {
     event.stopImmediatePropagation();
 });
 var setTopEnter = function(elem){
-        elem.fadeTo(animationTime,1,"swing");
+    elem.fadeTo(animationTime,1,"swing");
 }
 var setTopOut = function(elem){
     elem.fadeTo(animationTime,0,"swing");
 }
 var setBottomEnter = function(elem){
-        elem.fadeTo(animationTime,1,"swing");
+    elem.fadeTo(animationTime,1,"swing");
 }
 var setBottomOut = function(elem){
     elem.fadeTo(animationTime,0,"swing");

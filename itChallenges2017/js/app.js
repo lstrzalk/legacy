@@ -73,61 +73,46 @@ $mdThemingProvider.theme('default')
 
 /**
  * TODO LIST
- * Add Info Windows to tags - Today
  * Put address below marker tab when hover - Today/Tomorow
  * Explain what every button does when hover on him - Tomorow
- * Make calculate functionality !important - Today
+ * Make calculate functionality !important - Today - in progress
  * Add categories to markers - Tomorow
  * Add fancy icons to markers - Tomorow/Today
+ * Cahnge to one geocoder - refactor
 */
-
+cracov = new google.maps.LatLng(50.021, 19.885);
+var lastChoosed = true;
 app.controller('mainController', function($scope, $window, $mdDialog, Markers){
-    topAutocomplete = new google.maps.places.Autocomplete(
-           /** @type {!HTMLInputElement} */(document.getElementById('topInput')),
-      {types: ['geocode']});
-    topAutocomplete.addListener('place_changed', doSomeAction);
-    function doSomeAction(){
-        var place = topAutocomplete.getPlace();
-        var newMarker = placeMarker($scope, place.geometry.location, Markers);
-        $scope.markersObjects[newMarker.label] = newMarker;
-        $scope.$apply();
-        map.setCenter(place.geometry.location);
-    }
-    var geocoder = new google.maps.Geocoder;
-    var infowindow = new google.maps.InfoWindow;
+    InfoWindow = new google.maps.InfoWindow;
+    geocoder = new google.maps.Geocoder
     $scope.markers = Markers.loadMarkers();
-    var cracov = new google.maps.LatLng(50.021, 19.885);
     $window.map = new google.maps.Map(document.getElementById('map'), {
         center: cracov,
         zoom: 15
     });
     $scope.markersObjects = {};
-    loadMarkers($window.map, $scope, Markers);
+    topAutocomplete = new google.maps.places.Autocomplete(
+           /** @type {!HTMLInputElement} */(document.getElementById('topInput')),
+      {types: ['geocode']});
+    topAutocomplete.addListener('place_changed', function(){
+        placeFromSearchBox($scope, this, Markers, $window.map)
+    });
+    loadMarkers($window.map, $scope, Markers, InfoWindow);
     google.maps.event.addListener($window.map, 'click', function(event) {
-        var newMarker = placeMarker($scope, event.latLng, Markers);
+        var newMarker = placeMarker($scope, event.latLng, Markers, $window.map, InfoWindow);
         $scope.markersObjects[newMarker.label] = newMarker;
-        decode(geocoder, infowindow, event.latLng, newMarker);
         $scope.$apply();
     });
 
     $scope.markerChoosed = function(marker){
-        map.setCenter(marker.location);
-    }
-
-    $scope.decode = function(geocoder, infowindow, location, marker){
-        geocoder.geocode({'location': location}, function(results, status) {
-          if (status === 'OK') {
-            if (results[1]) {
-              map.setZoom(11);
-              infowindow.setContent(results[1].formatted_address);
-              infowindow.open(map, marker);
-            } else {
-              window.alert('No results found');
-            }
-          } else {
-            window.alert('Geocoder failed due to: ' + status);
-          }
-        });
+        if($scope.topSelected >=0 && $scope.bottomSelected >= 0){
+            // decode(new google.maps.Geocoder, InfoWindow, marker.location, $scope.markersObjects[marker.name], $window.map)
+            var choosed = [$scope.markers[$scope.topSelected],$scope.markers[$scope.bottomSelected]]
+            focusMap(choosed, $window.map);
+        }else{
+            decode(geocoder, InfoWindow, marker.location, $scope.markersObjects[marker.name], $window.map)
+            $window.map.setCenter(marker.location);
+        }
     }
 
     $scope.rename = function(marker){
@@ -148,10 +133,21 @@ app.controller('mainController', function($scope, $window, $mdDialog, Markers){
         });
     }
     $scope.delete = function(marker, index){
+        //Shold add new value, not delete becouse magic i doing
+        if($scope.topSelected != undefined && $scope.topSelected != -1 && $scope.bottomSelected != undefined && $scope.bottomSelected != -1){
+            console.log("TODO");
+        }else{
+            if(index == $scope.topSelected){
+                delete $scope.topSelected
+                console.log($scope.topSelected)
+            }else if(index == $scope.bottomSelected){
+                delete $scope.bottomSelected
+                console.log($scope.bottomSelected)
+            }
+        }
         $scope.markersObjects[marker.name].setMap(null);
         delete $scope.markersObjects[marker.name];
         $scope.markers = Markers.deleteMarker(marker.name);
-        index == 0 ? delete $scope.topSelected : delete $scope.bottomSelected
         //Add determining if it is top or bottom selected and delete it
     }
     $scope.deleteAll = function(){
@@ -166,11 +162,7 @@ app.controller('mainController', function($scope, $window, $mdDialog, Markers){
         $scope.markersObjects = {};
     }
     $scope.adjustMap = function(){
-        var bounds = new google.maps.LatLngBounds();
-        for (var i = 0; i < $scope.markers.length; i++) {
-        bounds.extend($scope.markers[i].location);
-        }
-        map.fitBounds(bounds);
+        focusMap($scope.markers, $window.map);
     }
 });
 
@@ -187,41 +179,168 @@ app.directive('ngRightClick', function($parse) {
 });
 function findIndex(list, node){
     for(var i = 0; i < list.length;i++){
-        console.log(list[i].name +" "+ node + " t/f  "+ (list[i].name == node));
         if(list[i].name == node){
             return i;
         }
     }
     return -1;
 }
-function placeMarker($scope, location, Markers) {
+function placeMarker($scope, location, Markers, map, InfoWindow) {
     var id = Markers.getID();
+    var marker = createMarkerObject(Markers, $scope, location, id, id, map, InfoWindow)
+    $scope.markers = Markers.createMarker(marker.label, marker.title, location);
+    map.setCenter(location);
+    return marker;
+}
+function loadMarkers(map, $scope, Markers, InfoWindow){
+    for(var i = 0; i< $scope.markers.length ; i = i +1){
+        $scope.markersObjects[$scope.markers[i].name] = createMarkerObject(Markers, $scope, $scope.markers[i].location, $scope.markers[i].title, $scope.markers[i].name, map, InfoWindow);
+    }
+    
+}
+
+function createMarkerObject(Markers, $scope, location, title, label, map, InfoWindow){
     var marker = new google.maps.Marker({
         position: location,
-        title:id,
-        label: id,
+        title: title,
+        label: label,
         map: map
     })
-    $scope.markers = Markers.createMarker(marker.label, marker.title, location);
+    return addListenersToMarker(Markers, marker, $scope,  geocoder, InfoWindow, map);
+}
+
+
+function addListenersToMarker(Markers, marker, $scope, geocoder, infowindow, map){
+    marker.addListener('click', function(){
+        if($scope.topSelected >= 0 && $scope.bottomSelected >= 0){
+            if(lastChoosed){
+                lastChoosed = !lastChoosed
+                if($scope.markers[$scope.topSelected] != $scope.markers[findIndex($scope.markers, marker.label)]){
+                    $scope.topSelected = findIndex($scope.markers, marker.label);
+                }
+                else{
+                    $scope.bottomSelected = findIndex($scope.markers, marker.label);
+                }
+            }else{
+                lastChoosed = !lastChoosed
+                if($scope.markers[$scope.bottomSelected] != $scope.markers[findIndex($scope.markers, marker.label)]){
+                    $scope.bottomSelected = findIndex($scope.markers, marker.label); 
+                }
+                else{
+                    $scope.topSelected = findIndex($scope.markers, marker.label);
+                }
+            }
+        }else if($scope.bottomSelected != undefined && $scope.bottomSelected != -1){
+            $scope.topSelected = findIndex($scope.markers, marker.label);
+        }else{
+            $scope.bottomSelected = findIndex($scope.markers, marker.label)
+        }
+        $scope.$apply();
+        decode(geocoder, infowindow, marker.position, marker, map);
+    });
     marker.addListener('dblclick', function(){
         $scope.delete(Markers.getMarkerByName(this.label))
         $scope.$apply();
     });
-    map.setCenter(location);
-    return marker;
+    return marker
 }
-function loadMarkers(map, $scope, Markers){
-    for(var i = 0; i< $scope.markers.length ; i = i +1){
-        var marker = new google.maps.Marker({
-        position: $scope.markers[i].location,
-        title: $scope.markers[i].title,
-        label: $scope.markers[i].name,
-        map: map
-    })
-    $scope.markersObjects[$scope.markers[i].name] = marker;
-    $scope.markersObjects[$scope.markers[i].name].addListener('dblclick', function(){
-        $scope.delete(Markers.getMarkerByName(this.label))
+function placeFromSearchBox($scope, topAutocomplete, Markers, map, InfoWindow){
+    var place = topAutocomplete.getPlace();
+    if(place){
+        var newMarker = placeMarker($scope, place.geometry.location, Markers, map, InfoWindow);
+        $scope.markersObjects[newMarker.label] = newMarker;
         $scope.$apply();
-        });
+    }
+}
+
+function decode(geocoder, infowindow, location, marker, map){
+    geocoder.geocode({'location': location}, function(results, status) {
+        if (status === 'OK') {
+        if (results[0]) {
+            map.setZoom(15);
+            map.setCenter(location);
+            infowindow.setContent(printAddress(marker,results[0].formatted_address));
+            infowindow.open(map, marker);
+        } else {
+            window.alert('No results found');
+        }
+        } else {
+        window.alert('Geocoder failed due to: ' + status);
+        }
+    });
+}
+function printAddress(marker, address){
+    var res = address.split(",");
+    var street;
+    var region;
+    var country;
+    if(res[0].length > 20){
+        if(res[0].split(" ").length > 1){
+            var temp = res[0].split(" ");
+            if(temp.length > 2){
+                var bal = balance(temp);
+                street = "<div id=\"address\">\n"
+                street = street + "<p>\n"
+                for(var i = 0 ; i < bal ; i = i + 1){
+                    street = street + temp[i] + " "
+                }
+                street = street + "</p>\n"
+                street = street + "<p>\n"
+                for(var i = bal ; i < temp.length ; i = i + 1){
+                    street = street + temp[i] + " "
+                }
+                street = street + "</p>\n"
+                street = street + "</div>\n"
+            }else{
+                street = "<div id=\"address\"> <p>"+ res[0] +"</p>\n</div>\n"
+            }
+        }
+    }
+    else{
+        street = "<div id=\"address\"> <p>"+ res[0] +"</p>\n</div>\n"
+    }
+    region = "<div id=\"address\"> <p>"+ res[1] +"</p>\n</div>\n"
+    country = "<div id=\"address\"> <p>"+ res[2] +"</p>\n</div>\n"
+    var title ="<h2 id=\"address\"> Title: "+ marker.title +"</h2>\n"
+    var id =  "<h3 id=\"address\"> id: "+ marker.label +"</h3>\n"
+    return title + id + street + region + country;
+}
+function balance(str){
+    var index = 0;
+    var best = 1;
+    var bestDif;
+    for(var i = 0; i < str.length - 1; i = i + 1){
+        var firstLen = 0;
+        var secondLen = 0;
+        for(var j = 0; j<i ; j = j + 1){
+            firstLen = firstLen + str[j].length
+        }
+        for(var k = i+1; k < str.length ; k = k +1){
+            secondLen = secondLen + str[k].length
+        }
+        if(bestDif == null){
+            bestDif = Math.abs(firstLen - secondLen)
+            best = i;
+        }else if(bestDif > Math.abs(firstLen - secondLen)){
+            bestDif =  Math.abs(firstLen - secondLen)
+            best = i;
+        }
+    }
+    return best;
+}
+function focusMap(markers, map){
+    var bounds = new google.maps.LatLngBounds();
+    if(markers.length > 1){
+        for (var i = 0; i < markers.length; i++) {
+            console.log(markers[i].location)
+            bounds.extend(markers[i].location);
+        }
+        map.fitBounds(bounds);
+    }else if(markers.length == 1){
+        map.setCenter(markers[0].location);
+        map.setZoom(15);
+    }else{
+        map.setCenter(cracov);
+        map.setZoom(15);
     }
 }

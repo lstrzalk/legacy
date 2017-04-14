@@ -14,10 +14,10 @@
     <div id = "barTop">
         <div class = "markersBar">
             <md-tabs class = "toolbar" md-selected = "topSelected" md-dynamic-height md-stretch-tabs="never">
-                <md-tab ng-repeat="marker in markers" md-on-select="markerChoosed(marker)" ng-disabled="bottomSelected != null && $index == bottomSelected">
+                <md-tab ng-repeat="marker in markers" md-on-select="markerChoosed(marker)" ng-disabled="bottomSelected != undefined && bottomSelected != -1 && $index == bottomSelected">
                     <span class = "tab">{{marker.name}}.{{marker.title}}</span>
                     <md-icon class = "tab" ng-click="rename(marker)"  md-font-library="material-icons">edit</md-icon>
-                    <md-icon class = "tab" ng-click="delete(marker, 0)"  md-font-library="material-icons">delete</md-icon>
+                    <md-icon class = "tab" ng-click="delete(marker, $index)"  md-font-library="material-icons">delete</md-icon>
                 </md-tab>
             </md-tabs>
             <div class = "focusButton"><md-icon class = "search" ng-click="adjustMap()" md-font-library="material-icons">center_focus_strong</md-icon></div>
@@ -35,10 +35,10 @@
     <div id = "barBottom">
         <div class = "markersBar">
             <md-tabs class = "toolbar" md-selected = "bottomSelected" md-dynamic-height md-stretch-tabs="never">
-                <md-tab ng-repeat="marker in markers" md-on-select="markerChoosed(marker)" ng-disabled="topSelected != null && $index == topSelected">
+                <md-tab ng-repeat="marker in markers" md-on-select="markerChoosed(marker)" ng-disabled="topSelected != undefined && topSelected != -1 && $index == topSelected">
                     <span class = "tab">{{marker.name}}.{{marker.title}}</span>
                     <md-icon class = "tab" ng-click="rename(marker)"  md-font-library="material-icons">edit</md-icon>
-                    <md-icon class = "tab" ng-click="delete(marker, 1)"  md-font-library="material-icons">delete</md-icon>
+                    <md-icon class = "tab" ng-click="delete(marker, $index)"  md-font-library="material-icons">delete</md-icon>
                 </md-tab>
             </md-tabs>
             <div class = "deleteButton" ><md-icon class = "search" ng-click="deleteAll()" md-font-library="material-icons">delete_forever</md-icon></div>
