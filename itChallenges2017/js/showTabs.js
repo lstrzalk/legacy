@@ -5,24 +5,24 @@ var searchClicked = false;
 $('body,html').mousemove(function(event){
     if(!searchClicked){
         if(event.pageY > 10 && event.pageY < 48 ){
-            if(event.pageX > $(window).width() / 10 ){
+            // if(event.pageX > $(window).width() / 10 ){
                 if(!mouseEntered){
                     mouseEntered = true;
                     setTopEnter($("#barTop"));
                     setBottomEnter($("#barBottom"));
                     $("#map").animate({top: '48px',height: '-=96px'},animationTime)
                 }
-            }
+            // }
         }
         else if(event.pageY < $(window).height() - 10 && event.pageY > $(window).height() - 48){
-            if(event.pageX < $(window).width() - 48 ){
+            // if(event.pageX < $(window).width() - 48 ){
                 if(!mouseEntered){
                     mouseEntered = true;
                     setBottomEnter($("#barBottom"));
                     setTopEnter($("#barTop"));
                     $("#map").animate({top: '48px',height: '-=96px'},animationTime)
                 }
-            }
+            // }
         }
         else{
             if(readyToCompute != true && mouseEntered){
@@ -34,7 +34,7 @@ $('body,html').mousemove(function(event){
         }
     }
 });
-$('.deleteButton').click(function(){
+$('#deleteButton').click(function(){
     mouseEntered = false;
     searchClicked = false;
     $("#map").animate({top: '0',height: '100%'},animationTime)
@@ -58,28 +58,85 @@ $('input[name=topInput]').focus(
         $(this).val('');
 });
 $('#focusButton').mouseover(function(){
-    $("#computeResult").css({'font-size':"24px"});
+    if(readyToCompute == true){
+        $("#computeResult").css({right:"48px"});
+    }
+    $("#computeResult").css({'font-size':"20px"});
     $("#computeResult").height("auto");
     $("#computeResult").html("<b>Adjust Map to all markers</b>");
     $("#computeResult").show(200);
 });
 $('#focusButton').mouseout(function(){
+    if(readyToCompute == true){
+        $("#computeResult").css({right:"0"});
+    }
     $("#computeResult").html("");
     $("#computeResult").hide(200);
     $("#computeResult").css({'font-size':"48px"});
     $("#computeResult").height("48px");
 });
 $('#searchButton').mouseover(function(){
-    $("#computeResult").css({'font-size':"24px"});
+    if(readyToCompute == true){
+        $("#computeResult").css({right:"48px"});
+    }
+    $("#computeResult").css({'font-size':"20px"});
     $("#computeResult").height("auto");
     $("#computeResult").html("<b>Find place with Google</b>");
     $("#computeResult").show(200);
 });
 $('#searchButton').mouseout(function(){
+    if(readyToCompute == true){
+        $("#computeResult").css({right:"0"});
+    }
     $("#computeResult").html("");
     $("#computeResult").hide(200);
     $("#computeResult").css({'font-size':"48px"});
     $("#computeResult").height("48px");
+});
+
+$('#computeButton').mouseover(function(){
+    if(readyToCompute == true){
+        $("#computeResult").css({right:"48px"});
+        $("#computeResult").css({'font-size':"20px"});
+        $("#computeResult").height("auto");
+        $("#computeResult").html("<b>Get distance</b>");
+        $("#computeResult").show(200);
+    }
+});
+$('#computeButton').mouseout(function(){
+    if(readyToCompute == true){
+        $("#computeResult").css({right:"0"});
+        $("#computeResult").html("");
+        $("#computeResult").hide(200);
+        $("#computeResult").css({'font-size':"48px"});
+        $("#computeResult").height("48px");
+    }
+});
+
+$('#cancelButton').mouseover(function(){
+    if(readyToCompute == true){
+        $("#computeResult").css({right:"48px"});
+        $("#computeResult").css({'font-size':"20px"});
+        $("#computeResult").height("auto");
+        $("#computeResult").html("<b>Close</b>");
+        $("#computeResult").show(200);
+    }
+});
+$('#cancelButton').mouseout(function(){
+    if(readyToCompute == true){
+        $("#computeResult").css({right:"0"});
+        $("#computeResult").html("");
+        $("#computeResult").hide(200);
+        $("#computeResult").css({'font-size':"48px"});
+        $("#computeResult").height("48px");
+    }
+});
+
+$('#deleteButton').mouseover(function(){
+    $("#bottomInfo").show(200);
+});
+$('#deleteButton').mouseout(function(){
+    $("#bottomInfo").hide(200);
 });
 
 $(document).keypress(function(e) {
@@ -121,12 +178,14 @@ function showComputingWindow(){
     if(readyToCompute == true){
         setBottomEnter($("#barBottom"));
         setTopEnter($("#barTop"));
+        $("#rightPannel").show(100)
         setBottomEnter($("#rightPannel"));
     }
 }
 function hideComputingWindow(){
     if(readyToCompute == false){
         $("#map").animate({top: '0',height: '100%'},animationTime)
+        $("#rightPannel").hide(100)
         setTopOut($("#barTop"));
         setBottomOut($("#barBottom"));
         setTopOut($("#rightPannel"));

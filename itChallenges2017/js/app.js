@@ -92,7 +92,25 @@ app.controller('mainController', function($scope, $window, $mdDialog, Markers){
     $scope.markers = Markers.loadMarkers();
     $window.map = new google.maps.Map(document.getElementById('map'), {
         center: cracov,
-        zoom: 15
+        zoom: 15,
+        mapTypeControl: true,
+        mapTypeControlOptions: {
+            style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,/*MUST CHANGE*/
+            position: google.maps.ControlPosition.LEFT_CENTER
+        },
+        zoomControl: true,
+        zoomControlOptions: {
+            position: google.maps.ControlPosition.RIGHT_CENTER
+        },
+        scaleControl: true,
+        streetViewControl: true,
+        streetViewControlOptions: {
+            position: google.maps.ControlPosition.LEFT_CENTER
+        },
+        fullscreenControl: true,
+        fullscreenControlOptions: {
+            position: google.maps.ControlPosition.RIGHT_CENTER
+        },
     });
     geodesicPoly = new google.maps.Polyline({
           strokeColor: '#CC0099',

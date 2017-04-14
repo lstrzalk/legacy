@@ -46,7 +46,8 @@
                     <md-icon class = "tab" ng-click="delete(marker, $index)"  md-font-library="material-icons">delete</md-icon>
                 </md-tab>
             </md-tabs>
-            <div class = "deleteButton" ><md-icon class = "search" ng-click="deleteAll()" md-font-library="material-icons">delete_forever</md-icon></div>
+            <div id = "deleteButton" ><md-icon class = "search" ng-click="deleteAll()" md-font-library="material-icons">delete_forever</md-icon></div>
+            <div id = "bottomInfo"><b>Delete all markers and local storage reset</b></div>
         </div>
     </div>
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCMM7MME49FZ75uQ8QQCVa-EK8pZo2Xmoc&libraries=places&geometry"></script>
