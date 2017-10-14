@@ -1,0 +1,176 @@
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: #FAFAFA;
+}
+
+* {
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+}
+
+.page {
+  width: 210mm;
+  min-height: 297mm;
+  padding: 5mm;
+  margin: 10mm auto;
+  border: 1px #D3D3D3 solid;
+  border-radius: 5px;
+  background: white;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-start;
+}
+
+.page .fullUnit {
+  margin: 0.2vh 0 0.2vh 0;
+  width: 100%;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.page .fullUnit .title {
+  widows: 60%;
+  font-size: 25px;
+  font-weight: 500;
+}
+
+.page .fullUnit .taskUnit {
+  margin-top: 2vh;
+  width: 90%;
+  font-size: 50px;
+  font-weight: 700;
+}
+
+.page .fullUnit .content {
+  margin: 1vh 0 0 1vh;
+  font-size: 15px;
+  font-weight: 500;
+  width: 80%;
+}
+
+.page .fullUnit .dataTitle {
+  margin-top: 3vh;
+  font-size: 20px;
+  font-weight: 700;
+  color: #586473;
+  width: 80%;
+  border-bottom: 1px solid #E7DACB;
+}
+
+.page .fullUnit .dataSummary {
+  margin: 1vh 0 0 1vh;
+  font-size: 15px;
+  font-weight: 500;
+  width: 80%;
+}
+
+.page .fullUnit .dataSummary .dataUnit .type {
+  margin-top: 1vh;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.page .fullUnit .dataSummary .dataUnit .typeA {
+  margin-top: 1vh;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.page .fullUnit .dataSummary .dataUnit .typeB {
+  margin-top: 1vh;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.page .fullUnit .dataSummary .dataUnit .value {
+  font-size: 15px;
+  font-weight: 700;
+  color: #586473;
+}
+
+.page .fullUnit .dataSummary .dataUnit .valueA {
+  font-size: 15px;
+  font-weight: 700;
+  color: #4A89AA;
+}
+
+.page .fullUnit .dataSummary .dataUnit .valueB {
+  font-size: 15px;
+  font-weight: 700;
+  color: #21374B;
+}
+
+.page .chartUnit {
+  margin: 0.2vh 0 0.2vh 0;
+  width: 100%;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.page .chartUnit #firstTask {
+  width: 100%;
+  height: 280mm;
+}
+
+.page .chartUnit #secondTask {
+  width: 100%;
+  height: 280mm;
+}
+
+.page .chartUnit #overall {
+  width: 100%;
+  height: 280mm;
+}
+
+.page .imageUnit {
+  margin: 0.2vh 0 0.2vh 0;
+  width: 100%;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-around;
+  align-items: center;
+  margin: 8vh 0 8vh 0;
+}
+
+.page .imageUnit .image {
+  margin: 0.2vh 0 0.2vh 0;
+  width: 100%;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-around;
+  align-items: center;
+  width: 50%;
+}
+
+@page {
+  size: A4;
+  margin: 0;
+}
+
+@media print {
+  html, body {
+    width: 210mm;
+    height: 297mm;
+  }
+  .page {
+    margin: 0;
+    border: initial;
+    border-radius: initial;
+    width: initial;
+    min-height: initial;
+    box-shadow: initial;
+    background: initial;
+    page-break-after: always;
+  }
+}
+ 
+
+ /*# sourceMappingURL= app.css.map */
