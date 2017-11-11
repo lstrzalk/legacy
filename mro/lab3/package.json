@@ -1,0 +1,15 @@
+{
+  "name": "dim-curse",
+  "version": "1.0.0",
+  "description": "first task mro",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "author": "Łukasz Strzałka",
+  "license": "ISC",
+  "dependencies": {
+    "mathjs": "^3.16.4",
+    "open": "0.0.5"
+  }
+}
