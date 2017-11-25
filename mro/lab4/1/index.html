@@ -1,0 +1,158 @@
+<!DOCTYPE HTML>
+<html>
+<header>
+    <meta charset="UTF-8">
+    <meta name="description" content="Fourth task for MRO">
+    <meta name="keywords" content="MRO">
+    <meta name="author" content="Lukasz Strzalka">
+    <link rel = "stylesheet" type = "text/css" href = "app.css"/>
+</header>
+<body>
+    <div class="report">
+        <div class="page">
+            <div class="fullUnit">
+                <div class="title">Akademia Górniczo-Hutnicza</div>
+            </div>
+            <div class="fullUnit">
+                <div class="title">Wydział Informatyki, Elektroniki i Telekomunikacji</div>
+            </div>
+            <div class="imageUnit">
+                    <img src="./assets/agh.jpg" class="image" alt="AGH logo">
+            </div>
+            <div class="fullUnit">
+                <div class="title">Łukasz Strzałka</div>
+            </div>
+            <div class="fullUnit">
+                <div class="title">Laboratorium 4 zad 1 - Metody inicjalizacji k-means</div>
+            </div>
+        </div>
+        <div class="page">
+            <div class="fullUnit">
+                <div class="taskUnit">
+                    Dane
+                </div>
+            </div>
+            <div class="fullUnit">
+                <div class="dataTitle">Liczby</div>
+            </div>
+            <div class="fullUnit">
+                <div class="dataSummary">
+                    <div class="dataUnit"><span class="typeA">Liczba Iteracji</span>: <span class="valueA">1000</span></div>
+                    <div class="dataUnit"><span class="typeA">Liczba Klastrów</span>: <span class="valueA">9</span></div>
+                    <div class="dataUnit"><span class="typeA">Liczba Punktów z obrazka</span>: <span class="valueA">2188</span></div>
+                    <div class="dataUnit"><span class="typeA">Metryka</span>: <span class="valueA">Davies-Bouldin index</span></div>
+                </div>
+            </div>
+            <div class="fullUnit">
+                <div class="dataTitle">Zbiory</div>
+            </div>
+            <div class="fullUnit">
+                <img class="content" src="assets/kmeans_homework.png" alt="1_3">
+            </div>
+        </div>
+        <div class="page">
+            <div class="fullUnit">
+                <div class="taskUnit">Rezultaty poszczególnych metod</div>
+            </div>
+            <div class="fullUnit">
+                <div class="dataTitle">Random</div>
+            </div>
+            <div class="fullUnit">
+                <img class="content" src="assets/random.png" alt="random">
+            </div>
+            <div class="fullUnit">
+                <div class="dataTitle">Random Partition</div>
+            </div>
+            <div class="fullUnit">
+                <img class="content" src="assets/rp.png" alt="random partition">
+            </div>
+        </div>
+        <div class="page">
+            <div class="fullUnit">
+                <div class="dataTitle">Forgy</div>
+            </div>
+            <div class="fullUnit">
+                <img class="content" src="assets/forgy.png" alt="forgy">
+            </div>
+            <div class="fullUnit">
+                <div class="dataTitle">K-Means ++</div>
+            </div>
+            <div class="fullUnit">
+                <img class="content" src="assets/kmpp.png" alt="k-means ++">
+            </div>
+        </div>
+        <div class="page">
+            <div class="fullUnit">
+                <div class="taskUnit">Jakość Klasteryzacji</div>
+            </div>
+            <div class="fullUnit">
+                <div class="dataTitle">Random</div>
+            </div>
+            <div class="fullUnit">
+                <div class="dataSummary">
+                    <div class="dataUnit"><span class="typeA">Średnia</span>: <span class="valueA">144.09230755267691</span></div>
+                    <div class="dataUnit"><span class="typeA">Błąd</span>: <span class="valueA">2.8421709430404007e-14</span></div>
+                </div>
+            </div>
+            <div class="fullUnit">
+                <div class="dataTitle">Random Partition</div>
+            </div>
+            <div class="fullUnit">
+                <div class="dataSummary">
+                    <div class="dataUnit"><span class="typeA">Średnia</span>: <span class="valueA">1.4210854715202004e-14</span></div>
+                    <div class="dataUnit"><span class="typeA">Błąd</span>: <span class="valueA">101.43592538041614</span></div>
+                </div>
+            </div>
+            <div class="fullUnit">
+                <div class="dataTitle">Forgy</div>
+            </div>
+            <div class="fullUnit">
+                <div class="dataSummary">
+                    <div class="dataUnit"><span class="typeA">Średnia</span>: <span class="valueA">44.941775627308211</span></div>
+                    <div class="dataUnit"><span class="typeA">Błąd</span>: <span class="valueA">65.564970595124208</span></div>
+                </div>
+            </div>
+            <div class="fullUnit">
+                <div class="dataTitle">K-Means++</div>
+            </div>
+            <div class="fullUnit">
+                <div class="dataSummary">
+                    <div class="dataUnit"><span class="typeA">Średnia</span>: <span class="valueA">7.6527794691607251e-15</span></div>
+                    <div class="dataUnit"><span class="typeA">Błąd</span>: <span class="valueA">36.333607657358641</span></div>
+                </div>
+            </div>
+            <div class="fullUnit">
+                <div class="dataTitle">Wykres</div>
+            </div>
+            <div class="fullUnit">
+                <div id="q"></div>
+            </div>
+        </div>
+        <div class="page">
+            <div class="fullUnit">
+                <div class="taskUnit">Jakość Klasteryzacji Silhouette</div>
+            </div>
+            <div class="fullUnit">
+                <div class="dataTitle">Wykres</div>
+            </div>
+            <div class="fullUnit">
+                <img class="scontent" src="assets/silhouette2.png" alt="Silhouette">
+            </div>
+            <div class="fullUnit">
+                <div class="taskUnit">Wnioski</div>
+            </div>
+            <div class="fullUnit">
+                <div class="dataSummary">
+                    Przede wszystkim możemy zauważyć, że najgorszej jakości klastry dają metodt <b>Random</b> i <b>Random Partition</b>. Może to być związane z tym że nie są to metody wbudowane w bibliotekę z której korzystałem.
+                    Ale są to także najmniej zaawansowane metody. <b>Forgy</b> i <b>K-means ++</b> dają najlepsze wyniki klasteryzaji. Potwierdzenie tych wyników znajduje się w wynikach i na wykresie je prezentującym zastosowanej miary jakości klasteryzaji Davies-Bouldin index.
+                    Metoda <b>Forgy</b> charakteryzuje się dużym marginesem błędu. W metryce Silhouette możemy zaobserwować że <b>K-means ++</b> daje nam najrówniejsze rozłożenie punktów po klastrach, <b>Forgy</b> też wygłąda nieźle, podczas testów zdarzało się że jego wykres wyglądał tak jak <b>K-means++</b>.
+                    Przechodząc do naszych maruderów, <b>Random</b> nie wygląda tak źle, ale <b>Random Partition</b> nie zachwyca wynikami. Podsumowywując <b>K-means ++</b> daje najrówniejsze i najlepsze rezultaty, <b>Forgy</b> daje niezłe rezultaty, ale ma duży margines błędu, jest bardzo niestabilny, potrafi wznieść się na wyżynyn a zaraz potem pogrążyć.
+                    <b>Random</b> i <b>Random Partition</b> nieprzypadkowo dają najgorsze wyniki. Wygląda na to że <b>Random</b> i <b>Random Partition</b> utknęły w minimum loklaknym.
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

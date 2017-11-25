@@ -1,0 +1,162 @@
+<!DOCTYPE HTML>
+<html>
+<header>
+    <meta charset="UTF-8">
+    <meta name="description" content="Fourth task for MRO">
+    <meta name="keywords" content="MRO">
+    <meta name="author" content="Lukasz Strzalka">
+    <link rel="stylesheet" type="text/css" href="app.css" />
+</header>
+
+<body>
+    <div class="report">
+        <div class="page">
+            <div class="fullUnit">
+                <div class="title">Akademia Górniczo-Hutnicza</div>
+            </div>
+            <div class="fullUnit">
+                <div class="title">Wydział Informatyki, Elektroniki i Telekomunikacji</div>
+            </div>
+            <div class="imageUnit">
+                <img src="./assets/agh.jpg" class="image" alt="AGH logo">
+            </div>
+            <div class="fullUnit">
+                <div class="title">Łukasz Strzałka</div>
+            </div>
+            <div class="fullUnit">
+                <div class="title">Laboratorium 4 zad 2 - Wykrywanie palety kolorów</div>
+            </div>
+        </div>
+        <div class="page">
+            <div class="fullUnit">
+                <div class="taskUnit">
+                    Zdjęcie 1
+                </div>
+            </div>
+            <div class="fullUnit">
+                <div class="dataTitle">Zdjęcie</div>
+            </div>
+            <div class="fullUnit">
+                <img class="woodContent" src="assets/wood4.jpg" alt="1_3">
+            </div>
+            <div class="fullUnit">
+                <div class="dataTitle">Klasteryzacja</div>
+            </div>
+            <div class="fullUnit">
+                <div class="dataSummary">
+                    <div class="dataUnit">
+                        <span class="typeA">K</span>:
+                        <span class="valueA">10</span>
+                    </div>
+                </div>
+            </div>
+            <div class="fullUnit">
+                <img class="woodContent" src="assets/wood410.png" alt="1_3">
+            </div>
+        </div>
+        <div class="page">
+            <div class="fullUnit">
+                <div class="dataTitle">Klasteryzacja</div>
+            </div>
+            <div class="fullUnit">
+                <div class="dataSummary">
+                    <div class="dataUnit">
+                        <span class="typeA">K</span>:
+                        <span class="valueA">20</span>
+                    </div>
+                </div>
+            </div>
+            <div class="fullUnit">
+                <img class="scontent" src="assets/wood420.png" alt="1_3">
+            </div>
+            <div class="fullUnit">
+                <div class="dataSummary">
+                    <div class="dataUnit">
+                        <span class="typeA">K</span>:
+                        <span class="valueA">30</span>
+                    </div>
+                </div>
+            </div>
+            <div class="fullUnit">
+                <img class="scontent" src="assets/wood430.png" alt="1_3">
+            </div>
+        </div>
+        <div class="page">
+            <div class="fullUnit">
+                <div class="taskUnit">
+                    Zdjęcie 2
+                </div>
+            </div>
+            <div class="fullUnit">
+                <div class="dataTitle">Zdjęcie</div>
+            </div>
+            <div class="fullUnit">
+                <img class="woodContent" src="assets/wood5.jpg" alt="1_3">
+            </div>
+            <div class="fullUnit">
+                <div class="dataTitle">Klasteryzacja</div>
+            </div>
+            <div class="fullUnit">
+                <div class="dataSummary">
+                    <div class="dataUnit">
+                        <span class="typeA">K</span>:
+                        <span class="valueA">10</span>
+                    </div>
+                </div>
+            </div>
+            <div class="fullUnit">
+                <img class="scontent" src="assets/wood510.png" alt="1_3">
+            </div>
+        </div>
+        <div class="page">
+            <div class="fullUnit">
+                <div class="dataTitle">Klasteryzacja</div>
+            </div>
+            <div class="fullUnit">
+                <div class="dataSummary">
+                    <div class="dataUnit">
+                        <span class="typeA">K</span>:
+                        <span class="valueA">20</span>
+                    </div>
+                </div>
+            </div>
+            <div class="fullUnit">
+                <img class="scontent" src="assets/wood520.png" alt="1_3">
+            </div>
+            <div class="fullUnit">
+                <div class="dataSummary">
+                    <div class="dataUnit">
+                        <span class="typeA">K</span>:
+                        <span class="valueA">30</span>
+                    </div>
+                </div>
+            </div>
+            <div class="fullUnit">
+                <img class="scontent" src="assets/wood530.png" alt="1_3">
+            </div>
+        </div>
+        <div class="pageLast">
+            <div class="fullUnit">
+                <div class="taskUnit">Wnioski</div>
+            </div>
+            <div class="fullUnit">
+                <div class="dataSummary">
+                    K-medians sprawdził się bardzo fajnie, dał bardzo ciekawe wyniki zależne od ilości klastrów. Stwierdziłem że przeprowadzę to doświadczenie na dwóch zdjęciach żeby mieć porównanie.
+                    Oba zdjęcia są z najbardziej kolorowego i najwspanialszego festiwalu świata <b>Przystanku Woodstock</b>.
+                    Zdjęcia są różne, pierwsze zdjęcie zostało wybrane celowo ze względu na kolory, łatwo na nim rozróżnić czarny, żółty oraz kolor flagi Francji.
+                    Możemy zaobsebować, że <b>K-medians</b> dla <b>10</b> klastrów daje niezły wynik, ale stosunkowo mało kolorów flagi.
+                    Dla <b>K</b> równego 20 wygląda już to lepiej, <b>K</b> równe 30 dało najlepszy wynik, później przeprowadziłem dla <b>K = 50</b> ale nie było różnicy względem <b>30</b>.
+                    Drugie zdjęcie jest z festiwalu kolorów w ramach koncertu Woodstockowego. Doświadczenia zostały przeprowadzone dla tego samego <b>K</b>.
+                    W tym przypadku już dla <b>K</b> = 10 dostajemy fajny rezultat, dla <b>K</b> = 20 dostajemy już odcienie, nie ma wielkiej różnicy między <b>20</b> a <b>30</b>.
+                    Podsumowywując, <b>k-medians</b> spisał się nieźle, w przypadku pierwszego zdjęcia możemy zaobsebować że dla <b>K</b> równego 10 nie spisał się jakoś wybitnie, wypadł prymitywnie, dla większej ilości klastrów wypadł dobrze.
+                    Problemem był wybór K, na pierwszym zdjęciu można na pierwszy rzut oka doliczyć się 5 kolorów, tymczasem dla <b>K</b> = 5 dał poniższy rezultat. Pewnie wiąże się to z zagęszczeniem tych kolorów.
+                </div>
+            </div>
+            <div class="fullUnit">
+                    <img class="scontent" src="assets/wood45.png" alt="1_3">
+                </div>
+        </div>
+    </div>
+</body>
+
+</html>
