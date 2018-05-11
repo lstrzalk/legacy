@@ -44,8 +44,8 @@ class Circle{
         if(this.parent){
             this.appendNewEventListener("touchmove", this.circleMouseClickOrTouched, circle);
             this.appendNewEventListener("touchend", this.circleMouseMoveEndOrTouchEnd, circle);
-            // this.appendNewEventListener("mousemoveend", this.circleMouseMoveEndOrTouchEnd, circle);
-            // this.appendNewEventListener("mousemove", this.circleMouseClickOrTouched, circle);
+            this.appendNewEventListener("mouseup", this.circleMouseMoveEndOrTouchEnd, circle);
+            this.appendNewEventListener("mousemove", this.circleMouseClickOrTouched, circle);
         }
         circle.id = this.id;
         svg.addElement(circle);
@@ -111,6 +111,7 @@ class Circle{
         this.updateCy(cy);
     }
 }
+document.body.requestFullscreen();
 const ns = 'http://www.w3.org/2000/svg';
 const svg = new Svg();
 const outerCircle = new Circle(svg.widthCenter(), svg.heightCenter(), svg.determineScreenOrientation()*0.7, 'outer-circle', svg, null);
