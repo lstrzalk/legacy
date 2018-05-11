@@ -1,0 +1,29 @@
+$outerCircle: #686963;
+$innerCircle: #DB5461;
+body{
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: space-around;
+    align-items: center;
+    background-color: #F1EDEE;
+    padding: 0;
+    margin: 0;
+    #controller{
+        #outer-circle{
+            fill: $outerCircle;
+            fill-opacity: .3;
+            stroke: $outerCircle;
+            stroke-width: 3;
+        }
+        #inner-circle{
+            fill: $innerCircle;
+            fill-opacity: .3;
+            stroke: $innerCircle;
+            stroke-width: 2;
+        }
+    }
+}

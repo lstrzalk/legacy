@@ -1,0 +1,28 @@
+body {
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: space-around;
+  align-items: center;
+  background-color: #F1EDEE;
+  padding: 0;
+  margin: 0;
+}
+
+body #controller #outer-circle {
+  fill: #686963;
+  fill-opacity: .3;
+  stroke: #686963;
+  stroke-width: 3;
+}
+
+body #controller #inner-circle {
+  fill: #DB5461;
+  fill-opacity: .3;
+  stroke: #DB5461;
+  stroke-width: 2;
+}
+/*# sourceMappingURL=app.css.map */
