@@ -2,6 +2,15 @@
 class Svg{
     constructor(){
         this.instance = this.getInstance();
+        if (this.instance.requestFullscreen) {
+            this.instance.requestFullscreen();
+        } else if (this.instance.webkitRequestFullscreen) {
+            this.instance.webkitRequestFullscreen();
+        } else if (this.instance.mozRequestFullScreen) {
+            this.instance.mozRequestFullScreen();
+        } else if (this.instance.msRequestFullscreen) {
+            this.instance.msRequestFullscreen();
+        }
     }
     svgWidth(){
         return this.instance.clientWidth;
@@ -111,7 +120,6 @@ class Circle{
         this.updateCy(cy);
     }
 }
-document.body.requestFullscreen();
 const ns = 'http://www.w3.org/2000/svg';
 const svg = new Svg();
 const outerCircle = new Circle(svg.widthCenter(), svg.heightCenter(), svg.determineScreenOrientation()*0.7, 'outer-circle', svg, null);
