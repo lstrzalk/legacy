@@ -1,5 +1,6 @@
 'user strict';
-window.scrollTo(0,1);
+window.addEventListener("load", function() { window. scrollTo(0, 0); });
+
 class Svg{
     constructor(){
         this.instance = this.getInstance();
