@@ -12,6 +12,9 @@ class Svg{
             this.instance.msRequestFullscreen();
         }
     }
+    appendNewEventListener(e, callback, binding){
+        this.instance.addEventListener(e, callback.bind(binding), false);
+    }
     svgWidth(){
         return this.instance.clientWidth;
     }
@@ -51,10 +54,11 @@ class Circle{
         circle.setAttributeNS(null, "cy", this.cy);
         circle.setAttributeNS(null, "r", this.r);
         if(this.parent){
-            this.appendNewEventListener("touchmove", this.circleMouseClickOrTouched, circle);
-            this.appendNewEventListener("touchend", this.circleMouseMoveEndOrTouchEnd, circle);
-            this.appendNewEventListener("mouseup", this.circleMouseMoveEndOrTouchEnd, circle);
-            this.appendNewEventListener("mousemove", this.circleMouseClickOrTouched, circle);
+            this.appendNewEventListener("touchmove", this.circleTouch, circle);
+            this.appendNewEventListener("touchend", this.circleTouchEnd, circle);
+            this.appendNewEventListener("mousedown", this.circleMouseMoveStart, circle);
+            this.appendNewEventListener("mouseup", this.mouseMoveEnd, circle);
+            this.appendNewEventListener("mousemove", this.circleMouseMove, circle);
         }
         circle.id = this.id;
         svg.addElement(circle);
@@ -63,18 +67,26 @@ class Circle{
     appendNewEventListener(e, callback, circle){
         circle.addEventListener(e, callback.bind(this), false);
     }
-    circleMouseClickOrTouched(e){
-        let dist = this.getDistance(e.touches[0].clientX, e.touches[0].clientY);
+    circleMouseClickOrTouched(x, y){
+        let dist = this.getDistance(x, y);
         if(dist <= this.parent.r){
-            this.updateCoords(e.touches[0].clientX, e.touches[0].clientY);
+            this.updateCoords(x, y);
         } else {
-            let cos = this.getCos(e.touches[0].clientX, e.touches[0].clientY, this.svg.widthCenter(), this.svg.heightCenter())
-            let sin = this.getSin(e.touches[0].clientX, e.touches[0].clientY, this.svg.widthCenter(), this.svg.heightCenter())
+            let cos = this.getCos(x, y, this.svg.widthCenter(), this.svg.heightCenter())
+            let sin = this.getSin(x, y, this.svg.widthCenter(), this.svg.heightCenter())
             let maxR = this.parent.r;
             this.updateCoords(cos*maxR + this.svg.widthCenter(), sin * maxR + this.svg.heightCenter());
         }
     }
-    circleMouseMoveEndOrTouchEnd(e){
+    circleTouch(e){
+        this.circleMouseClickOrTouched(e.touches[0].clientX, e.touches[0].clientY);
+    }
+    circleMouseMove(e){
+        if(this.enableCircleMove){
+            this.circleMouseClickOrTouched(e.x, e.y);            
+        }
+    }
+    circleTouchEnd(e){
         let dist = this.getDistance(this.cx, this.cy);
         while(dist > 0){
             window.requestAnimationFrame(this.makeStep(dist));
@@ -82,6 +94,17 @@ class Circle{
         }
         dist = 0;
         window.requestAnimationFrame(this.makeStep(dist));
+    }
+
+    mouseMoveEnd(e){
+        if(this.enableCircleMove){
+            this.circleTouchEnd(e);
+            this.enableCircleMove = false;
+        }
+    }
+
+    circleMouseMoveStart(e){
+        this.enableCircleMove = true;
     }
     getDistance(cx, cy){
         let diffX = this.svg.widthCenter() - cx;
@@ -124,3 +147,5 @@ const ns = 'http://www.w3.org/2000/svg';
 const svg = new Svg();
 const outerCircle = new Circle(svg.widthCenter(), svg.heightCenter(), svg.determineScreenOrientation()*0.7, 'outer-circle', svg, null);
 const innerCircle = new Circle(svg.widthCenter(), svg.heightCenter(), svg.determineScreenOrientation()*0.3, 'inner-circle', svg, outerCircle);
+svg.appendNewEventListener("mousemove", innerCircle.circleMouseMove, innerCircle);
+svg.appendNewEventListener("mouseup", innerCircle.mouseMoveEnd, innerCircle);
