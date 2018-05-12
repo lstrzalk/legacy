@@ -1,4 +1,5 @@
 'user strict';
+window.scrollTo(0,1);
 class Svg{
     constructor(){
         this.instance = this.getInstance();
@@ -70,12 +71,14 @@ class Circle{
     circleMouseClickOrTouched(x, y){
         let dist = this.getDistance(x, y);
         if(dist <= this.parent.r){
-            this.updateCoords(x, y);
+            // this.updateCoords(x, y);
+            window.requestAnimationFrame(this.makeStepForward(x, y));
         } else {
             let cos = this.getCos(x, y, this.svg.widthCenter(), this.svg.heightCenter())
             let sin = this.getSin(x, y, this.svg.widthCenter(), this.svg.heightCenter())
             let maxR = this.parent.r;
-            this.updateCoords(cos*maxR + this.svg.widthCenter(), sin * maxR + this.svg.heightCenter());
+            window.requestAnimationFrame(this.makeStepForward(cos*maxR + this.svg.widthCenter(), sin * maxR + this.svg.heightCenter()));
+            // this.updateCoords(cos*maxR + this.svg.widthCenter(), sin * maxR + this.svg.heightCenter());
         }
     }
     circleTouch(e){
@@ -89,11 +92,11 @@ class Circle{
     circleTouchEnd(e){
         let dist = this.getDistance(this.cx, this.cy);
         while(dist > 0){
-            window.requestAnimationFrame(this.makeStep(dist));
+            window.requestAnimationFrame(this.makeStepBack(dist));
             dist -= 0.1;
         }
         dist = 0;
-        window.requestAnimationFrame(this.makeStep(dist));
+        window.requestAnimationFrame(this.makeStepBack(dist));
     }
 
     mouseMoveEnd(e){
@@ -118,7 +121,14 @@ class Circle{
     getSin(x1, y1, x2, y2 ){
         return Math.sin(Math.atan2(y1 - y2, x1 - x2));
     }
-    makeStep(dist) {
+
+    makeStepForward(x, y) {
+        return function(){
+            this.updateCoords(x,y)
+        }.bind(this);
+    }
+
+    makeStepBack(dist) {
         return function(){
             this.updateCoords((dist * this.getCos(this.cx, this.cy, this.svg.widthCenter(), this.svg.heightCenter())) + this.svg.widthCenter(),
             (dist * this.getSin(this.cx, this.cy, this.svg.widthCenter(), this.svg.heightCenter())) + this.svg.heightCenter());
