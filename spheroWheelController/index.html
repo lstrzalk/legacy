@@ -8,8 +8,35 @@
     <title>sphero controller</title>
 </head>
 <body>
-        <svg id="controller" height="100%" width="100%">  
-        </svg> 
+    <div class="container">
+        <!-- <a href="#" class="tab">arrows</a> -->
+        <a href="#" class="tab" id="joystick">joystick</a>
+        <a href="#" class="tab" id="gyroscope">gyroscope</a>
+    </div>
+    <!-- <svg id="controller"></svg>  -->
+    <table class="table table-striped table-bordered">
+            <tr>
+              <td>API used</td>
+              <td id="moApi"></td>
+            </tr>
+            <tr>
+              <td>linear acceleration (excl. gravity)</td>
+              <td id="moAccel"></td>
+            </tr>
+            <tr>
+              <td>acceleration incl. gravity</td>
+              <td id="moAccelGrav"></td>
+            </tr>
+            <tr>
+              <td>rotation rate</td>
+              <td id="moRotation"></td>
+            </tr>
+            <tr>
+              <td>interval (ms)</td>
+              <td id="moInterval"></td>
+            </tr>
+          </table>
+          
     <script src="app.js"></script>
 </body>
 </html>
