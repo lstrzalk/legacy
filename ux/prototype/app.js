@@ -99,6 +99,28 @@ window.onload = function(){
     console.log(cellButtonGroup.children);
 }
 
+let infoShow = {
+  0: false,
+  1: false,
+  2: false
+}
+
+const buttonClick = (event, i) => {
+  infoShow[i] = !infoShow[i];
+  console.log(event)
+  if(infoShow[i]){
+    event.style.height="100%";
+    event.children[1].style.display="block";
+    event.children[0].style.display="none";
+    event.children[3].style.display="block";
+  } else {
+    event.style.height="33%";
+    event.children[0].style.display="block";
+    event.children[1].style.display="none";
+    event.children[3].style.display="none";
+  }
+}
+
 
 
 // var $carousel = $('.carousel').flickity({
