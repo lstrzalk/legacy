@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Browar app main page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=UnifrakturCook:700" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" media="screen" href="app.css" />
+    <link rel="stylesheet" href="https://unpkg.com/flickity@2/dist/flickity.min.css">
+    <script src="app.js"></script>
+</head>
+<body>
+    <div class="headbar">
+        <!-- <svg xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 24 24">
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+        </svg> -->
+        <span class="app-title">browapp</span>
+    </div>
+    <div id="main-carousel" data-flickity='{ "wrapAround": true, "pageDots": false, "prevNextButtons": true, "pauseAutoPlayOnHover": false, "draggable": false}'>
+        <div class="main-carousel-cell">
+                <div class="minor-carousel" data-flickity='{ "wrapAround": true, "pageDots": false, "prevNextButtons": false, "autoPlay": 3000, "pauseAutoPlayOnHover": false}'>
+                        <div class="carousel-cell offers-cell">
+                            <div class="price">6$</div>
+                            <div class="image" style="background-image: url('https://www.yvans.com/wp-content/uploads/2016/08/13412932_10153670529290963_4890880748427443198_n.png')"></div>
+                        </div>
+                        <div class="carousel-cell offers-cell" >
+                            <div class="price">3$</div>
+                            <div class="image" style="background-image: url('https://www.yvans.com/wp-content/uploads/2017/03/PU2P_SKOLNIK_web.png')"></div>
+                        </div>
+                        <div class="carousel-cell offers-cell" >
+                            <div class="price">4$</div>
+                            <div class="image" style="background-image: url('https://www.yvans.com/wp-content/uploads/2017/06/Ejlvis3040.jpg')"></div>
+                        </div>
+                    </div>
+            <div id="map">
+                <!-- <div class="map-headbar">pub of today</div>
+                <div class="map-body"></div>
+                <div class="map-headbar map-footer"></div> -->
+                <input type="search" placeholder="search" class="search-bar">
+                <div class="map-content">
+                    <div class="pub-link">
+                            <!-- nearest pubs -->
+                        <span class="pl">nearest pubs</span>
+                    </div>
+                    <div class="pub-link map-link">
+                        <span class="ml">pubs map</span>
+                    </div>
+                </div>
+            </div>
+            <div class="minor-carousel" data-flickity='{ "wrapAround": true, "pageDots": false, "prevNextButtons": false, "autoPlay": 3000, "pauseAutoPlayOnHover": false}'>
+                    <div class="carousel-cell" style="background-image: url('http://willrunforbeer.com/wp-content/uploads/2017/07/69.jpg')">
+                        <div class="info" onclick="buttonClick(this, 0)">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="2 2 18 9" fill="white" class="icon">
+                                <path d="M7 14l5-5 5 5z"/>
+                                <path d="M0 0h24v24H0z" fill="none"/>
+                            </svg>
+                            <svg style="display:none" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="2 2 18 9" class="icon">
+                                <path d="M7 10l5 5 5-5z"/>
+                                <path d="M0 0h24v24H0z" fill="none"/>
+                            </svg>
+                            <div class="title">info</div>
+                            <div class="content" style="display:none">
+                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Optio deserunt expedita necessitatibus quos voluptate praesentium
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-cell" style="background-image: url('https://food.fnr.sndimg.com/content/dam/images/food/fullset/2015/11/20/0/fnd_beer-istock.jpg.rend.hgtvcom.616.462.suffix/1448031613421.jpeg')">
+                        <div class="info" onclick="buttonClick(this, 1)">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="2 2 18 9" fill="white" class="icon">
+                                <path d="M7 14l5-5 5 5z"/>
+                                <path d="M0 0h24v24H0z" fill="none"/>
+                            </svg>
+                            <svg style="display:none" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="2 2 18 9" class="icon">
+                                <path d="M7 10l5 5 5-5z"/>
+                                <path d="M0 0h24v24H0z" fill="none"/>
+                            </svg>
+                            <div class="title">info</div>
+                            <div class="content" style="display:none">
+                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Optio deserunt expedita necessitatibus quos voluptate praesentium
+                            </div>
+                        </div>                
+                    </div>
+                    <div class="carousel-cell" style="background-image: url('https://cdn.static-economist.com/sites/default/files/images/2017/07/articles/main/20170708_wbp502.jpg')">
+                        <div class="info" onclick="buttonClick(this, 2)">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="2 2 18 9" fill="white" class="icon">
+                                <path d="M7 14l5-5 5 5z"/>
+                                <path d="M0 0h24v24H0z" fill="none"/>
+                            </svg>
+                            <svg style="display:none" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="2 2 18 9" class="icon">
+                                <path d="M7 10l5 5 5-5z"/>
+                                <path d="M0 0h24v24H0z" fill="none"/>
+                            </svg>
+                            <div class="title">info</div>
+                            <div class="content" style="display:none">
+                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Optio deserunt expedita necessitatibus quos voluptate praesentium
+                            </div>
+                        </div>                
+                    </div>
+                </div>
+        </div>
+        <div class="main-carousel-cell" id="google-maps"></div>
+    </div>
+    <div id="footer-navigation">
+        <div class="current next">map</div>
+        <div class="current">home</div>
+        <div class="current next">pubs</div>
+    </div>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBlVIk_bWdNVHonUoGH0ZIuAq5imjiLFYQ&callback=initMap"></script>
+    <script src="https://unpkg.com/flickity@2/dist/flickity.pkgd.min.js"></script>
+    <script src="https://hammerjs.github.io/dist/hammer.min.js"></script>
+</body>
+</html>
