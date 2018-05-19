@@ -182,9 +182,9 @@ if ('LinearAccelerationSensor' in window && 'Gyroscope' in window) {
     
     let gyroscope = new Gyroscope();
     gyroscope.addEventListener('reading', e => rotationHandler({
-      alpha: gyroscope.x,
-      beta: gyroscope.y,
-      gamma: gyroscope.z
+      alpha: Math.round(gyroscope.x),
+      beta: Math.round(gyroscope.y),
+      gamma: Math.round(gyroscope.z)
     }));
     gyroscope.start();
     
@@ -206,18 +206,18 @@ if ('LinearAccelerationSensor' in window && 'Gyroscope' in window) {
   function accelerationHandler(acceleration, targetId) {
     var info, xyz = "[X, Y, Z]";
   
-    info = xyz.replace("X", acceleration.x && acceleration.x.toFixed(3));
-    info = info.replace("Y", acceleration.y && acceleration.y.toFixed(3));
-    info = info.replace("Z", acceleration.z && acceleration.z.toFixed(3));
+    info = xyz.replace("X", acceleration.x && acceleration.x.toFixed(0));
+    info = info.replace("Y", acceleration.y && acceleration.y.toFixed(0));
+    info = info.replace("Z", acceleration.z && acceleration.z.toFixed(0));
     document.getElementById(targetId).innerHTML = info;
   }
   
   function rotationHandler(rotation) {
     var info, xyz = "[X, Y, Z]";
   
-    info = xyz.replace("X", rotation.alpha && rotation.alpha.toFixed(3));
-    info = info.replace("Y", rotation.beta && rotation.beta.toFixed(3));
-    info = info.replace("Z", rotation.gamma && rotation.gamma.toFixed(3));
+    info = xyz.replace("X", rotation.alpha && rotation.alpha.toFixed(0));
+    info = info.replace("Y", rotation.beta && rotation.beta.toFixed(0));
+    info = info.replace("Z", rotation.gamma && rotation.gamma.toFixed(0));
     document.getElementById("moRotation").innerHTML = info;
   }
   
