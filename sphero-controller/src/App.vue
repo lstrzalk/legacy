@@ -1,0 +1,54 @@
+<template>
+  <v-app >
+    <v-toolbar :dark="true" tabs>
+      <v-toolbar-title>Sphero Controller</v-toolbar-title>
+      <v-tabs v-model="model" slot="extension" grow>
+        <v-tab :href="'#joystick'">Joystick</v-tab>
+        <v-tab :href="'#rotation'">Rotation</v-tab>
+      </v-tabs>
+    </v-toolbar>
+    <v-tabs-items :class="'tabs'" v-model="model">
+      <v-tab-item :class="'tab'" :id="'joystick'">
+        <Joystick></Joystick>
+      </v-tab-item>
+      <v-tab-item :class="'tab'" :id="'rotation'">
+        <Rotation></Rotation>
+      </v-tab-item>
+    </v-tabs-items>
+
+    <v-footer :fixed="true" :dark="true" app>
+      <span>&copy; 2018</span>
+      <v-spacer></v-spacer>
+      <span>Łukasz Strzałka</span>
+    </v-footer>
+  </v-app>
+</template>
+
+<script>
+import Rotation from './components/Rotation'
+import Joystick from './components/Joystick'
+
+export default {
+  data () {
+    return {
+      model: null
+    }
+  },
+  name: 'App',
+  components: {
+    Rotation,
+    Joystick
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+  .tabs{
+    height: 100%;
+    width: 100%;
+    .tab{
+      height: 100%;
+      width: 100%;
+    }
+  }
+</style>
