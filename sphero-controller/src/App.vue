@@ -5,6 +5,7 @@
       <v-tabs v-model="model" slot="extension" grow>
         <v-tab :href="'#joystick'">Joystick</v-tab>
         <v-tab :href="'#rotation'">Rotation</v-tab>
+        <v-tab :href="'#colors'">Colors</v-tab>
       </v-tabs>
     </v-toolbar>
     <v-tabs-items :class="'tabs'" v-model="model">
@@ -13,6 +14,9 @@
       </v-tab-item>
       <v-tab-item :class="'tab'" :id="'rotation'">
         <Rotation></Rotation>
+      </v-tab-item>
+      <v-tab-item :class="'tab'" :id="'colors'">
+        <Colors></Colors>
       </v-tab-item>
     </v-tabs-items>
 
@@ -27,6 +31,7 @@
 <script>
 import Rotation from './components/Rotation'
 import Joystick from './components/Joystick'
+import Colors from './components/Colors'
 
 export default {
   data () {
@@ -37,7 +42,8 @@ export default {
   name: 'App',
   components: {
     Rotation,
-    Joystick
+    Joystick,
+    Colors
   }
 }
 </script>

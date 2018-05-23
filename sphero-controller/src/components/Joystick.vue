@@ -11,7 +11,8 @@ export default {
             model: null
         }
     },
-    mounted() {window.addEventListener('load', () => {
+    mounted() {
+    window.addEventListener('load', () => {
         const svg = new Svg(this.$el);
         const outerCircle = new Circle(svg.widthCenter(), svg.heightCenter(), svg.determineScreenOrientation()*0.7, 'outer-circle', svg, null, this.$refs.oc);
         const innerCircle = new Circle(svg.widthCenter(), svg.heightCenter(), svg.determineScreenOrientation()*0.3, 'inner-circle', svg, outerCircle, this.$refs.ic);
