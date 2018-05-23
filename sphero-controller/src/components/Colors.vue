@@ -1,25 +1,40 @@
 <template>
-<div v-bind:style="bgc" class="background">
-
+<div :style="bgc" class="background">
+    <color-picker v-for="(color, index) in colors" :color="color" :index="index" :picked="pickedColor" @change-color="changeColor"></color-picker>
 </div>
 </template>
 <script>
+import ColorPicker from './ColorPicker'
+import SpheroService from '../services/SpheroService'
 export default {
     data () {
         const d = {
-            currentColor: '#723158',
+            colors: ["#A62639", "#59C3C3", "#9FD356", "#F1DAC4", "#0A100D"],
+            pickedColor: 0,
             bgc:{
-                backgroundColor: `#723158AA`
-                // backgroundColor: `rgba(31,43,97,.3)`
-            }
+                backgroundColor: `#A62639AA`
+            },
+            socket: new SpheroService()
         }
         return d
     },
     mounted(){
-        this.bgc.backgroundColor = `#72AA58AA`
-        console.log(this.bgc.backgroundColor)
+         this.setBackgroundColor()
     },
-    name: 'Joystick'
+    methods:{
+        setBackgroundColor: function(){
+            this.bgc.backgroundColor = `${this.colors[this.pickedColor]}44`
+        },
+        changeColor: function(colorIndex){
+            this.pickedColor=colorIndex;
+            this.setBackgroundColor()
+            this.socket.sendCommand("colors", this.pickedColor)
+        }
+    },
+    name: 'Colors',
+    components: {
+        ColorPicker
+    }
 }
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -31,10 +46,8 @@ export default {
     box-sizing: border-box;
     display: flex;
     flex-flow: row wrap;
-    justify-content: flex-start;
+    justify-content: space-around;
     align-items: center;
-    .color-changer{
-        
-    }
+    transition: all 300ms cubic-bezier(0.39, 0.575, 0.565, 1);
 }
 </style>

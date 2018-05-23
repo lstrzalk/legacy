@@ -4,19 +4,19 @@
       <v-toolbar-title>Sphero Controller</v-toolbar-title>
       <v-tabs v-model="model" slot="extension" grow>
         <v-tab :href="'#joystick'">Joystick</v-tab>
-        <v-tab :href="'#rotation'">Rotation</v-tab>
+        <!-- <v-tab :href="'#rotation'">Rotation</v-tab> -->
         <v-tab :href="'#colors'">Colors</v-tab>
       </v-tabs>
     </v-toolbar>
     <v-tabs-items :class="'tabs'" v-model="model">
       <v-tab-item :class="'tab'" :id="'joystick'">
-        <Joystick></Joystick>
+        <joystick></joystick>
       </v-tab-item>
-      <v-tab-item :class="'tab'" :id="'rotation'">
-        <Rotation></Rotation>
-      </v-tab-item>
+      <!-- <v-tab-item :class="'tab'" :id="'rotation'">
+        <totation></totation>
+      </v-tab-item> -->
       <v-tab-item :class="'tab'" :id="'colors'">
-        <Colors></Colors>
+        <colors></colors>
       </v-tab-item>
     </v-tabs-items>
 
@@ -25,6 +25,7 @@
       <v-spacer></v-spacer>
       <span>Łukasz Strzałka</span>
     </v-footer>
+    <socket-service></socket-service>    
   </v-app>
 </template>
 
@@ -32,11 +33,13 @@
 import Rotation from './components/Rotation'
 import Joystick from './components/Joystick'
 import Colors from './components/Colors'
+import AppService from './services/AppService'
 
 export default {
   data () {
     return {
-      model: null
+      model: null,
+      serverApp: new AppService()
     }
   },
   name: 'App',
